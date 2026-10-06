@@ -62,7 +62,7 @@
 </div>
 
 <script>
-const API='https://mempool.space/api',BASE='https://bitcoinsats.io/watchonlywallet/';
+const API='https://mempool.space/api',BASE='https://bitcoinsats.io/watchonly/';
 const $=id=>document.getElementById(id);
 let cur='BTC',addr='',data=null,price=null,txs=[],timer=null;
 
@@ -73,7 +73,7 @@ function setTheme(t){document.documentElement.dataset.theme=t;$('theme').textCon
 $('theme').onclick=()=>setTheme(document.documentElement.dataset.theme==='dark'?'light':'dark');
 
 function fromUrl(){
-  const m=location.pathname.match(/\/watchonlywallet\/([A-Za-z0-9]+)/);
+  const m=location.pathname.match(/\/watchonly\/([A-Za-z0-9]+)/);
   return m?m[1]:(new URLSearchParams(location.search).get('addr')||location.hash.slice(1)||'');
 }
 const valid=a=>/^(bc1[a-z0-9]{20,100}|[13][a-km-zA-HJ-NP-Z1-9]{25,39})$/.test(a);
@@ -136,7 +136,7 @@ async function load(a,push){
   try{
     const [d,t,p]=await Promise.all([j(`${API}/address/${a}`),j(`${API}/address/${a}/txs`),j(`${API}/v1/prices`).catch(()=>null)]);
     data=d;txs=t;price=p;$('out').hidden=false;$('msg').textContent='';
-    if(push)try{history.replaceState(null,'','/watchonlywallet/'+a)}catch(e){try{history.replaceState(null,'','?addr='+a)}catch(_){}}
+    if(push)try{history.replaceState(null,'','/watchonly/'+a)}catch(e){try{history.replaceState(null,'','?addr='+a)}catch(_){}}
     render();clearInterval(timer);timer=setInterval(()=>load(a,false),60000);
   }catch(e){$('msg').innerHTML='<span class="err">Abruf fehlgeschlagen. Bitte später erneut versuchen.</span>'}
 }
