@@ -93,7 +93,7 @@ main{
   display:flex;
   align-items:center;
   gap:10px;
-  font-weight:650;
+  font-weight:450;
   font-size:1.1rem;
   letter-spacing:-.02em;
   color:inherit;
