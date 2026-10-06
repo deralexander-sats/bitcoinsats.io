@@ -71,20 +71,40 @@ const $=id=>document.getElementById(id);
 let cur='BTC',addr='',data=null,price=null,txs=[],timer=null;
 
 /* Theme */
-(function(){let t='light';try{t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light')}catch(e){}
-  setTheme(t)})();
-function setTheme(t){document.documentElement.dataset.theme=t;$('theme').textContent=t==='dark'?'☀':'☾';try{localStorage.setItem('theme',t)}catch(e){}}
-$('theme').onclick=()=>setTheme(document.documentElement.dataset.theme==='dark'?'light':'dark');
+/* Theme */
+(function(){
+  let t='light';
+  try{
+    t=localStorage.getItem('theme') ||
+      (matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');
+  }catch(e){}
 
+  setTheme(t);
+})();
 
-function updateLogo(){
-  document.querySelectorAll('.logo img').forEach(img => {
-    img.src =
-      document.documentElement.dataset.theme === 'dark'
-        ? img.dataset.dark
-        : img.dataset.light;
+function setTheme(t){
+  document.documentElement.dataset.theme=t;
+
+  $('theme').textContent=t==='dark'?'☀':'☾';
+
+  document.querySelectorAll('.logo img').forEach(img=>{
+    img.src=t==='dark'
+      ? img.dataset.dark
+      : img.dataset.light;
   });
+
+  try{
+    localStorage.setItem('theme',t);
+  }catch(e){}
 }
+
+$('theme').onclick=()=>{
+  setTheme(
+    document.documentElement.dataset.theme==='dark'
+      ? 'light'
+      : 'dark'
+  );
+};
 
   
 function fromUrl(){
