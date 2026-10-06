@@ -182,7 +182,7 @@ $('more').onclick=async()=>{
   const last=txs.filter(t=>t.status.confirmed).pop();if(!last)return;
   try{txs=txs.concat(await j(`${API}/address/${addr}/txs/chain/${last.txid}`));render()}catch(e){}
 };
-const a0=fromUrl();if(a0){$('addr').value=a0;load(a0,false)}
+const a0=fromUrl();if(a0){$('addr').value=a0;load(a0,true)}
 
 
   
