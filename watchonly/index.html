@@ -76,6 +76,17 @@ let cur='BTC',addr='',data=null,price=null,txs=[],timer=null;
 function setTheme(t){document.documentElement.dataset.theme=t;$('theme').textContent=t==='dark'?'☀':'☾';try{localStorage.setItem('theme',t)}catch(e){}}
 $('theme').onclick=()=>setTheme(document.documentElement.dataset.theme==='dark'?'light':'dark');
 
+
+function updateLogo(){
+  document.querySelectorAll('.logo img').forEach(img => {
+    img.src =
+      document.documentElement.dataset.theme === 'dark'
+        ? img.dataset.dark
+        : img.dataset.light;
+  });
+}
+
+  
 function fromUrl(){
   const m=location.pathname.match(/\/watchonly\/([A-Za-z0-9]+)/);
   return m?m[1]:(new URLSearchParams(location.search).get('addr')||location.hash.slice(1)||'');
@@ -153,6 +164,9 @@ $('more').onclick=async()=>{
   try{txs=txs.concat(await j(`${API}/address/${addr}/txs/chain/${last.txid}`));render()}catch(e){}
 };
 const a0=fromUrl();if(a0){$('addr').value=a0;load(a0,false)}
+
+
+  
 </script>
 </body>
 </html>
