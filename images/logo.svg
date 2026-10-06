@@ -1,30 +1,9 @@
-
-Dann bleibt unser Logo-Konzept so festgelegt:
-
-eigenes geometrisches Symbol
-B/Bitcoin-Anmutung nur angedeutet
-Satoshi-Detail sehr dezent
-orange/gold wie die Website
-Symbol allein um 13,888888…° nach rechts gedreht
-bitcoinsats.io bleibt horizontal
-insgesamt zurückhaltend und seriös
-zeig es mir
-
-Hier ist die Variante mit der 13,888888…°-Drehung nur auf dem Symbol:
-
-So sieht die Geometrie aus: Das gesamte Zeichen wird geneigt, während der Text bitcoinsats.io später ganz normal waagerecht daneben steht.
-
-der zweite schwarze balken fehlt. Soll mit zwei balken sein
-
-Ja. Dann nehmen wir wieder beide schwarzen vertikalen Balken auf und drehen weiterhin das komplette Symbol exakt um 13,888888…° nach rechts.
-
 <svg width="44" height="44" viewBox="0 0 44 44"
      xmlns="http://www.w3.org/2000/svg"
      aria-label="bitcoinsats.io">
 
   <g transform="rotate(13.8888889 22 22)">
 
-    <!-- Bitcoin-Anmutung: zwei vertikale Balken -->
     <path
       d="M18 9 V35"
       stroke="#1A1204"
@@ -37,7 +16,6 @@ Ja. Dann nehmen wir wieder beide schwarzen vertikalen Balken auf und drehen weit
       stroke-width="2"
       stroke-linecap="round"/>
 
-    <!-- angedeutetes B -->
     <path
       d="M18 11
          C27 10 30 13 30 17
@@ -50,7 +28,6 @@ Ja. Dann nehmen wir wieder beide schwarzen vertikalen Balken auf und drehen weit
       stroke-linecap="round"
       stroke-linejoin="round"/>
 
-    <!-- dezentes Satoshi-Detail -->
     <circle
       cx="34"
       cy="9"
@@ -59,5 +36,3 @@ Ja. Dann nehmen wir wieder beide schwarzen vertikalen Balken auf und drehen weit
 
   </g>
 </svg>
-
-Damit haben wir wieder die zwei schwarzen Balken, die orange B-Form darüber und die Bitcoin-typische Neigung.
