@@ -1,1 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="64"
+     height="64"
+     viewBox="0 0 44 44">
 
+  <g transform="rotate(13.8888889 22 22)">
+
+    <!-- Zwei schwarze vertikale Balken -->
+    <path
+      d="M18 9 V35"
+      stroke="#1A1204"
+      stroke-width="2"
+      stroke-linecap="round"/>
+
+    <path
+      d="M22 9 V35"
+      stroke="#1A1204"
+      stroke-width="2"
+      stroke-linecap="round"/>
+
+    <!-- Orange B -->
+    <path
+      d="M18 11
+         C27 10 30 13 30 17
+         C30 20 28 22 24 22
+         C29 22 32 24 32 28
+         C32 33 28 35 19 33"
+      fill="none"
+      stroke="#F7931A"
+      stroke-width="3"
+      stroke-linecap="round"
+      stroke-linejoin="round"/>
+
+    <!-- Satoshi-Punkt -->
+    <circle
+      cx="34"
+      cy="9"
+      r="1.6"
+      fill="#1A1204"/>
+
+  </g>
+
+</svg>
