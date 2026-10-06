@@ -1,1 +1,212 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Watch-Only-Wallet | bitcoinsats.io</title>
+<meta name="description" content="Bitcoin-Adresse beobachten: Bestand, Ein- und Ausgänge, Verlauf. Nur lesend, ohne Anmeldung.">
+<style>
+/* ===== Design-Tokens (Basis für die spätere Hauptseite) ===== */
+:root{
+  --bg:#FBF8F3;--surface:#FFFFFF;--ink:#14181F;--mu:#6B7280;--line:#ECE6DB;
+  --ac:#F7931A;--ac2:#FFC15E;--on-ac:#1A1204;--soft:#FFF3E2;
+  --in:#0E9F6E;--out:#E0443E;
+  --r:22px;--r-s:14px;--shadow:0 14px 34px -16px rgba(20,24,31,.22);
+  --font:ui-rounded,"SF Pro Rounded","Segoe UI",system-ui,-apple-system,Roboto,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+[data-theme=dark]{
+  --bg:#0C1017;--surface:#151B26;--ink:#F1F3F7;--mu:#98A2B3;--line:#242C3A;
+  --soft:#241B0D;--in:#34D399;--out:#FF7A74;--shadow:0 14px 34px -16px rgba(0,0,0,.7);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 var(--font);
+  background-image:radial-gradient(900px 380px at 85% -80px,var(--soft),transparent 70%)}
+.wrap{max-width:880px;margin:0 auto;padding:20px 16px 72px}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:34px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.15rem;letter-spacing:-.02em}
+.logo svg{width:36px;height:36px}.logo i{font-style:normal;color:var(--ac)}
+.ic{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;font-size:1.05rem}
+h1{font-size:clamp(1.9rem,5vw,2.8rem);line-height:1.1;letter-spacing:-.03em;margin:0 0 10px}
+h1 em{font-style:normal;background:linear-gradient(90deg,var(--ac),var(--ac2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{color:var(--mu);margin:0 0 24px;max-width:56ch}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:22px;margin-bottom:16px;box-shadow:var(--shadow)}
+.search{display:flex;gap:8px;flex-wrap:wrap}
+input{flex:1;min-width:230px;padding:14px 18px;border-radius:999px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);font:.9rem var(--mono)}
+input:focus{outline:none;border-color:var(--ac)}
+.btn{padding:12px 20px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:600 .95rem var(--font);cursor:pointer}
+.btn.p{background:linear-gradient(135deg,var(--ac),var(--ac2));border:0;color:var(--on-ac)}
+.btn:hover{filter:brightness(.97)}
+.mu{color:var(--mu);font-size:.88rem}
+.err{color:var(--out)}
+.hero{position:relative;overflow:hidden}
+.hero:before{content:"";position:absolute;inset:0 0 auto 0;height:5px;background:linear-gradient(90deg,var(--ac),var(--ac2))}
+.hd{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.seg{display:inline-flex;background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:3px}
+.seg button{border:0;background:none;color:var(--mu);padding:7px 14px;border-radius:999px;font:600 .85rem var(--font);cursor:pointer}
+.seg button.on{background:var(--ac);color:var(--on-ac)}
+.bal{font-size:clamp(2rem,7vw,3rem);font-weight:800;letter-spacing:-.03em;margin:14px 0 2px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:18px}
+.stat{background:var(--bg);border-radius:var(--r-s);padding:12px 14px}
+.stat span{display:block;color:var(--mu);font-size:.78rem}.stat b{font-size:1rem}
+h2{font-size:1.05rem;margin:0}
+.tx{display:flex;gap:14px;align-items:center;padding:14px 0;border-top:1px solid var(--line)}
+.tx:first-child{border-top:0}
+.dot{flex:none;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:1.1rem}
+.dot.in{background:color-mix(in srgb,var(--in) 16%,transparent);color:var(--in)}
+.dot.out{background:color-mix(in srgb,var(--out) 16%,transparent);color:var(--out)}
+.tx .m{flex:1;min-width:0}
+.tx a{color:var(--mu);font:.78rem var(--mono);text-decoration:none}.tx a:hover{color:var(--ac)}
+.amt{text-align:right;font-weight:700;white-space:nowrap}.amt.in{color:var(--in)}.amt.out{color:var(--out)}
+.pill{font-size:.7rem;font-weight:700;padding:2px 9px;border-radius:999px;background:var(--soft);color:var(--ac);margin-left:6px}
+#chart svg{width:100%;height:auto;display:block;margin-top:10px}
+.qr{display:flex;gap:20px;align-items:center;flex-wrap:wrap;margin-top:12px}
+.qr svg{width:148px;height:148px;background:#fff;padding:10px;border-radius:var(--r-s);border:1px solid var(--line)}
+.qr .l{word-break:break-all;font:.8rem var(--mono);color:var(--mu);max-width:340px}
+footer{color:var(--mu);font-size:.8rem;text-align:center;margin-top:28px}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="logo">
+      <svg viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F7931A"/><stop offset="1" stop-color="#FFC15E"/></linearGradient></defs><rect width="40" height="40" rx="12" fill="url(#g)"/><text x="20" y="28" text-anchor="middle" font-size="24" font-weight="800" fill="#1A1204" font-family="system-ui,sans-serif">₿</text></svg>
+      <span>bitcoin<i>sats</i>.io</span>
+    </div>
+    <button class="ic" id="theme" aria-label="Darstellung wechseln">☾</button>
+  </div>
+
+  <h1>Watch-Only-<em>Wallet</em></h1>
+  <p class="lead">Öffentliche Bitcoin-Adresse eingeben und Bestand, Ein- und Ausgänge sowie den Verlauf beobachten. Nur lesend, ohne Anmeldung und ohne private Schlüssel.</p>
+
+  <div class="card">
+    <div class="search">
+      <input id="addr" placeholder="Bitcoin-Adresse (bc1…, 1… oder 3…)" autocomplete="off" spellcheck="false">
+      <button class="btn p" id="go">Anzeigen</button>
+    </div>
+    <div id="msg" class="mu" style="margin-top:10px"></div>
+  </div>
+
+  <div id="out" hidden>
+    <div class="card hero">
+      <div class="hd">
+        <div class="seg" id="cur"><button data-c="BTC" class="on">BTC</button><button data-c="SATS">sats</button><button data-c="EUR">EUR</button><button data-c="USD">USD</button></div>
+        <button class="btn" id="copy">Link kopieren</button>
+      </div>
+      <div class="bal" id="bal"></div>
+      <div class="mu" id="balsub"></div>
+      <div class="stats" id="stats"></div>
+    </div>
+
+    <div class="card">
+      <div class="hd"><h2>Guthabenverlauf</h2><span class="mu">in BTC, geladene Transaktionen</span></div>
+      <div id="chart"></div>
+    </div>
+
+    <div class="card">
+      <div class="hd"><h2>Transaktionen</h2><span class="mu" id="upd"></span></div>
+      <div id="txs" style="margin-top:6px"></div>
+      <div style="margin-top:14px"><button class="btn" id="more" hidden>Ältere laden</button></div>
+    </div>
+
+    <div class="card">
+      <h2>Teilen</h2>
+      <div class="qr"><div id="qrimg"></div><div><div class="mu">QR-Code scannen oder Link weitergeben:</div><div class="l" id="qrlink"></div></div></div>
+    </div>
+  </div>
+  <footer>Daten von mempool.space · Kein Anlageberatungsangebot · bitcoinsats.io</footer>
+</div>
+
+<script>
+const API='https://mempool.space/api',BASE='https://bitcoinsats.io/watchonlywallet/';
+const $=id=>document.getElementById(id);
+let cur='BTC',addr='',data=null,price=null,txs=[],timer=null;
+
+/* Theme */
+(function(){let t='light';try{t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light')}catch(e){}
+  setTheme(t)})();
+function setTheme(t){document.documentElement.dataset.theme=t;$('theme').textContent=t==='dark'?'☀':'☾';try{localStorage.setItem('theme',t)}catch(e){}}
+$('theme').onclick=()=>setTheme(document.documentElement.dataset.theme==='dark'?'light':'dark');
+
+function fromUrl(){
+  const m=location.pathname.match(/\/watchonlywallet\/([A-Za-z0-9]+)/);
+  return m?m[1]:(new URLSearchParams(location.search).get('addr')||location.hash.slice(1)||'');
+}
+const valid=a=>/^(bc1[a-z0-9]{20,100}|[13][a-km-zA-HJ-NP-Z1-9]{25,39})$/.test(a);
+const nf=(n,d=0)=>n.toLocaleString('de-DE',{minimumFractionDigits:d,maximumFractionDigits:d});
+function fmt(sats){
+  if(cur==='BTC')return nf(sats/1e8,8)+' BTC';
+  if(cur==='SATS')return nf(sats)+' sats';
+  return price?(sats/1e8*price[cur]).toLocaleString('de-DE',{style:'currency',currency:cur}):'–';
+}
+const fmtDate=t=>t?new Date(t*1000).toLocaleString('de-DE',{dateStyle:'medium',timeStyle:'short'}):'Unbestätigt';
+function netOf(tx){let n=0;
+  tx.vout.forEach(v=>{if(v.scriptpubkey_address===addr)n+=v.value});
+  tx.vin.forEach(v=>{if(v.prevout&&v.prevout.scriptpubkey_address===addr)n-=v.prevout.value});return n}
+const j=async u=>{const r=await fetch(u);if(!r.ok)throw new Error(r.status);return r.json()};
+
+function chart(){
+  const conf=txs.filter(t=>t.status.confirmed).sort((a,b)=>b.status.block_time-a.status.block_time);
+  if(!conf.length){$('chart').innerHTML='<p class="mu">Noch keine bestätigten Transaktionen.</p>';return}
+  const c=data.chain_stats;let bal=c.funded_txo_sum-c.spent_txo_sum;
+  const pts=[[Date.now()/1000,bal]];
+  conf.forEach(t=>{pts.unshift([t.status.block_time,bal]);bal-=netOf(t)});
+  pts.unshift([conf[conf.length-1].status.block_time-1,bal]);
+  const W=760,H=230,L=14,R=14,T=26,B=26,t0=pts[0][0],t1=pts[pts.length-1][0];
+  const vs=pts.map(p=>p[1]),mx=Math.max(...vs),mn=Math.min(...vs,0),rg=(mx-mn)||1,tr=(t1-t0)||1;
+  const X=t=>L+(t-t0)/tr*(W-L-R),Y=v=>H-B-(v-mn)/rg*(H-T-B);
+  let d='M'+X(pts[0][0])+' '+Y(pts[0][1]);
+  for(let i=1;i<pts.length;i++)d+=' H'+X(pts[i][0])+' V'+Y(pts[i][1]);
+  const area=d+` V${Y(mn)} H${X(pts[0][0])} Z`;
+  const dt=t=>new Date(t*1000).toLocaleDateString('de-DE',{month:'short',year:'numeric'});
+  $('chart').innerHTML=`<svg viewBox="0 0 ${W} ${H}"><defs><linearGradient id="a" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F7931A" stop-opacity=".35"/><stop offset="1" stop-color="#F7931A" stop-opacity="0"/></linearGradient></defs>
+  <path d="${area}" fill="url(#a)"/><path d="${d}" fill="none" stroke="#F7931A" stroke-width="3" stroke-linejoin="round"/>
+  <text x="${L}" y="16" fill="var(--mu)" font-size="12">Max. ${nf(mx/1e8,4)} BTC</text>
+  <text x="${L}" y="${H-6}" fill="var(--mu)" font-size="12">${dt(t0)}</text>
+  <text x="${W-R}" y="${H-6}" fill="var(--mu)" font-size="12" text-anchor="end">${dt(t1)}</text></svg>`;
+}
+function qr(){
+  try{const q=qrcode(0,'M');q.addData(BASE+addr);q.make();$('qrimg').innerHTML=q.createSvgTag({scalable:true,margin:0})}
+  catch(e){$('qrimg').textContent=''}
+  $('qrlink').textContent=BASE+addr;
+}
+function render(){
+  const c=data.chain_stats,m=data.mempool_stats,bal=c.funded_txo_sum-c.spent_txo_sum,pend=m.funded_txo_sum-m.spent_txo_sum;
+  $('bal').textContent=fmt(bal);
+  $('balsub').textContent=cur==='BTC'||cur==='SATS'?(price?'≈ '+(bal/1e8*price.EUR).toLocaleString('de-DE',{style:'currency',currency:'EUR'}):''):nf(bal/1e8,8)+' BTC';
+  const st=[['Empfangen',fmt(c.funded_txo_sum)],['Gesendet',fmt(c.spent_txo_sum)],['Transaktionen',nf(c.tx_count+m.tx_count)],
+    ['Unbestätigt',pend?fmt(pend):'keine'],['BTC-Kurs',price?nf(price.EUR)+' € · '+nf(price.USD)+' $':'–']];
+  $('stats').innerHTML=st.map(s=>`<div class="stat"><span>${s[0]}</span><b>${s[1]}</b></div>`).join('');
+  $('txs').innerHTML=txs.length?txs.map(t=>{const n=netOf(t),p=n>=0,k=p?'in':'out';
+    return `<div class="tx"><div class="dot ${k}">${p?'↓':'↑'}</div><div class="m"><b>${p?'Eingang':'Ausgang'}</b>${t.status.confirmed?'':'<span class="pill">unbestätigt</span>'}
+    <div class="mu">${fmtDate(t.status.block_time)}${t.status.confirmed?' · Block '+nf(t.status.block_height):''} · Gebühr ${nf(t.fee)} sats</div>
+    <a target="_blank" rel="noopener" href="https://mempool.space/tx/${t.txid}">${t.txid.slice(0,14)}…${t.txid.slice(-8)}</a></div>
+    <div class="amt ${k}">${p?'+':'−'}${fmt(Math.abs(n))}</div></div>`}).join(''):'<p class="mu">Keine Transaktionen.</p>';
+  $('more').hidden=txs.filter(t=>t.status.confirmed).length>=c.tx_count;
+  $('upd').textContent='Stand '+new Date().toLocaleTimeString('de-DE');
+  chart();qr();
+}
+async function load(a,push){
+  if(!valid(a)){$('msg').innerHTML='<span class="err">Das ist keine gültige Bitcoin-Adresse.</span>';return}
+  addr=a;$('msg').textContent='Lade …';
+  try{
+    const [d,t,p]=await Promise.all([j(`${API}/address/${a}`),j(`${API}/address/${a}/txs`),j(`${API}/v1/prices`).catch(()=>null)]);
+    data=d;txs=t;price=p;$('out').hidden=false;$('msg').textContent='';
+    if(push)try{history.replaceState(null,'','/watchonlywallet/'+a)}catch(e){try{history.replaceState(null,'','?addr='+a)}catch(_){}}
+    render();clearInterval(timer);timer=setInterval(()=>load(a,false),60000);
+  }catch(e){$('msg').innerHTML='<span class="err">Abruf fehlgeschlagen. Bitte später erneut versuchen.</span>'}
+}
+$('go').onclick=()=>load($('addr').value.trim(),true);
+$('addr').onkeydown=e=>{if(e.key==='Enter')$('go').click()};
+$('cur').onclick=e=>{const c=e.target.dataset.c;if(!c)return;cur=c;[...$('cur').children].forEach(b=>b.classList.toggle('on',b===e.target));render()};
+$('copy').onclick=async()=>{try{await navigator.clipboard.writeText(BASE+addr);$('copy').textContent='Kopiert ✓'}catch(e){prompt('Link:',BASE+addr)}setTimeout(()=>$('copy').textContent='Link kopieren',1800)};
+$('more').onclick=async()=>{
+  const last=txs.filter(t=>t.status.confirmed).pop();if(!last)return;
+  try{txs=txs.concat(await j(`${API}/address/${addr}/txs/chain/${last.txid}`));render()}catch(e){}
+};
+const a0=fromUrl();if(a0){$('addr').value=a0;load(a0,false)}
+</script>
+</body>
+</html>
 
