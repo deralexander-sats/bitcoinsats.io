@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Weiterleitung …</title>
+<script>
+(function(){
+  const path = location.pathname;
+
+  if(path.startsWith('/watchonly/')){
+    const address = path.substring('/watchonly/'.length);
+
+    if(address){
+      location.replace(
+        '/watchonly/?addr=' + encodeURIComponent(address)
+      );
+      return;
+    }
+  }
+
+  location.replace('/');
+})();
+</script>
+</head>
+<body>
+Weiterleitung …
+</body>
+</html>
