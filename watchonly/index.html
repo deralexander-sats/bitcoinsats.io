@@ -152,8 +152,7 @@ function render(){
   const c=data.chain_stats,m=data.mempool_stats,bal=c.funded_txo_sum-c.spent_txo_sum,pend=m.funded_txo_sum-m.spent_txo_sum;
   $('bal').textContent=fmt(bal);
   $('balsub').textContent=cur==='BTC'||cur==='SATS'?(price?'≈ '+(bal/1e8*price.EUR).toLocaleString('de-DE',{style:'currency',currency:'EUR'}):''):nf(bal/1e8,8)+' BTC';
-  const st=[['Empfangen',fmt(c.funded_txo_sum)],['Gesendet',fmt(c.spent_txo_sum)],['Transaktionen',nf(c.tx_count+m.tx_count)],
-    ['Unbestätigt',pend?fmt(pend):'keine'],['BTC-Kurs',price?nf(price.EUR)+' € · '+nf(price.USD)+' $':'–']];
+  const st=[['Empfangen',fmt(c.funded_txo_sum)],['Gesendet',fmt(c.spent_txo_sum)],['Transaktionen',nf(c.tx_count+m.tx_count)],['BTC-Kurs',price?nf(price.EUR)+' € · '+nf(price.USD)+' $':'–']];
   $('stats').innerHTML=st.map(s=>`<div class="stat"><span>${s[0]}</span><b>${s[1]}</b></div>`).join('');
   $('txs').innerHTML=txs.length?txs.map(t=>{const n=netOf(t),p=n>=0,k=p?'in':'out';
     return `<div class="tx"><div class="dot ${k}">${p?'↓':'↑'}</div><div class="m"><b>${p?'Eingang':'Ausgang'}</b>${t.status.confirmed?'':'<span class="pill">unbestätigt</span>'}
