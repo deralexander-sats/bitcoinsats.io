@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Datenschutz | bitcoinsats.io</title>
+<meta name="description" content="Datenschutzerklärung von bitcoinsats.io">
+<script>try{document.documentElement.dataset.theme=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light')}catch(e){}</script>
+<link rel="canonical" href="https://bitcoinsats.io/datenschutz.html">
+<link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<header class="bar">
+  <div class="bar-in">
+    <a class="logo" href="/" aria-label="bitcoinsats.io Startseite">
+      <img class="logo-light" src="/images/logo.svg" alt="" width="29" height="34">
+      <img class="logo-dark" src="/images/logo-dark.svg" alt="" width="29" height="34">
+      <span>bitcoin<i>sats</i>.io</span>
+    </a>
+    <div class="bar-actions">
+      <button class="ic" id="theme" type="button" aria-label="Darstellung wechseln">☾</button>
+      <button class="menu-btn" id="menubtn" type="button" aria-expanded="false" aria-controls="menu">
+        <span class="burger" aria-hidden="true"></span><span class="menu-label">Menü</span>
+      </button>
+    </div>
+  </div>
+  <nav class="menu" id="menu" aria-label="Hauptmenü" hidden>
+    <a href="/">Startseite</a>
+    <a href="/watchonly/">Bitcoin-Balance-Monitor</a>
+    <a href="/impressum.html">Impressum</a>
+    <a href="/datenschutz.html">Datenschutz</a>
+  </nav>
+</header>
+<div class="wrap">
+  <main class="legal">
+    <h1>Datenschutz&shy;erklärung</h1>
+    <p class="mu">Stand: Oktober 2026</p>
+
+    <!-- TODO: Angaben in eckigen Klammern ergänzen und den Text vor der Veröffentlichung rechtlich prüfen lassen. -->
+    <h2>1. Verantwortlicher</h2>
+    <p>[VOR- UND NACHNAME], [ANSCHRIFT], E-Mail: [E-MAIL-ADRESSE]</p>
+
+    <h2>2. Kurzfassung</h2>
+    <p>Wir setzen keine Cookies, kein Tracking und keine Analyse-Dienste ein. Es gibt keine Registrierung. Wir speichern keine Bitcoin-Adressen auf eigenen Servern.</p>
+
+    <h2>3. Hosting über GitHub Pages</h2>
+    <p>Diese Website wird über GitHub Pages bereitgestellt (GitHub Inc., 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, USA). Beim Aufruf verarbeitet der Hoster technisch notwendige Daten, insbesondere die IP-Adresse, Datum und Uhrzeit sowie die abgerufene Seite, in Server-Logdateien. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (Interesse an einem sicheren und stabilen Betrieb). Eine Übermittlung in die USA kann stattfinden.</p>
+
+    <h2>4. Bitcoin-Balance-Monitor</h2>
+    <p>Wenn Sie im Balance-Monitor eine Bitcoin-Adresse eingeben oder einen Link mit Adresse öffnen, sendet Ihr Browser die Adresse direkt an die Schnittstelle von mempool.space, um Bestand, Transaktionen und Kurse abzurufen. Dabei erhält mempool.space technisch bedingt auch Ihre IP-Adresse. Wir selbst sehen die Anfragen nicht und speichern die Adresse nicht. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b bzw. f DSGVO.</p>
+    <p>Bitte beachten Sie: Die Adresse steht in der Web-Adresse (URL) der Seite. Wer den Link weitergibt, gibt auch die Adresse weiter. Bitcoin-Adressen sind pseudonym, können aber einer Person zugeordnet werden, wenn die Verbindung bekannt ist.</p>
+    <p>Beim Klick auf einen Transaktions-Link wird mempool.space geöffnet. Wir übermitteln dabei keine Herkunftsadresse (Referrer). Dort gilt die Datenschutzerklärung von mempool.space.</p>
+
+    <h2>5. QR-Code-Bibliothek</h2>
+    <!-- TODO: Abschnitt löschen, sobald qrcode.min.js lokal unter /js/ eingebunden ist. -->
+    <p>Zur Darstellung des QR-Codes laden wir ein Skript vom Content-Delivery-Network cdnjs (Cloudflare). Dabei wird Ihre IP-Adresse an den Betreiber übermittelt. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO.</p>
+
+    <h2>6. Lokale Speicherung im Browser</h2>
+    <p>Ihre Wahl zwischen hellem und dunklem Design speichern wir im lokalen Speicher Ihres Browsers (localStorage). Die Information verlässt Ihr Gerät nicht und enthält keine personenbezogenen Daten.</p>
+
+    <h2>7. Ihre Rechte</h2>
+    <p>Sie haben das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch nach Art. 15 bis 21 DSGVO. Außerdem können Sie sich bei einer Datenschutz-Aufsichtsbehörde beschweren, zum Beispiel bei [ZUSTÄNDIGE AUFSICHTSBEHÖRDE].</p>
+  </main>
+</div>
+
+<footer>
+  <div class="wrap">
+    <span>© <span id="y"></span> bitcoinsats.io · Keine Anlageberatung</span>
+    <span><a href="/impressum.html">Impressum</a><a href="/datenschutz.html">Datenschutz</a></span>
+  </div>
+</footer>
+
+<script src="/js/site.js"></script>
+<script>document.getElementById('y').textContent=new Date().getFullYear();</script>
+</body>
+</html>

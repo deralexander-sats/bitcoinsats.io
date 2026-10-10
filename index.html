@@ -5,31 +5,46 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>bitcoinsats.io | Informationen und Tools rund um Bitcoin</title>
 <meta name="description" content="Sachliche Informationen und praktische Werkzeuge rund um Bitcoin. Ausschließlich Bitcoin, transparent und überprüfbar.">
+<script>try{document.documentElement.dataset.theme=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light')}catch(e){}</script>
+<link rel="canonical" href="https://bitcoinsats.io/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="bitcoinsats.io | Informationen und Tools rund um Bitcoin">
+<meta property="og:description" content="Sachliche Informationen und praktische Werkzeuge rund um Bitcoin. Ausschließlich Bitcoin, transparent und überprüfbar.">
+<meta property="og:url" content="https://bitcoinsats.io/">
 <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-<div class="wrap">
-  <div class="top">
-   <a class="logo" href="/">
-    <img
-    src="/images/logo.svg"
-    data-light="/images/logo.svg"
-    data-dark="/images/logo-dark.svg"
-    alt="bitcoinsats.io">
-  <span>bitcoin<i>sats</i>.io</span>
+<header class="bar">
+  <div class="bar-in">
+    <a class="logo" href="/" aria-label="bitcoinsats.io Startseite">
+      <img class="logo-light" src="/images/logo.svg" alt="" width="29" height="34">
+      <img class="logo-dark" src="/images/logo-dark.svg" alt="" width="29" height="34">
+      <span>bitcoin<i>sats</i>.io</span>
     </a>
-    <button class="ic" id="theme" aria-label="Darstellung wechseln">☾</button>
+    <div class="bar-actions">
+      <button class="ic" id="theme" type="button" aria-label="Darstellung wechseln">☾</button>
+      <button class="menu-btn" id="menubtn" type="button" aria-expanded="false" aria-controls="menu">
+        <span class="burger" aria-hidden="true"></span><span class="menu-label">Menü</span>
+      </button>
+    </div>
   </div>
-
+  <nav class="menu" id="menu" aria-label="Hauptmenü" hidden>
+    <a href="/">Startseite</a>
+    <a href="/watchonly/">Bitcoin-Balance-Monitor</a>
+    <a href="/impressum.html">Impressum</a>
+    <a href="/datenschutz.html">Datenschutz</a>
+  </nav>
+</header>
+<div class="wrap">
   <main>
     <h1>Klarheit rund um <em>Bitcoin</em></h1>
     <p class="lead">bitcoinsats.io bietet sachliche Informationen und praktische Werkzeuge rund um Bitcoin, verständlich für Einsteiger und nützlich für erfahrene Holder. Der Fokus liegt ausschließlich auf Bitcoin: transparent, überprüfbar und ohne Altcoins.</p>
-    <a class="btn" href="watchonly/">Bitcoin-Balance-Monitor öffnen</a>
+    <a class="btn" href="/watchonly/">Bitcoin-Balance-Monitor öffnen</a>
 
     <h2>Tools</h2>
     <div class="grid">
-      <a class="card" href="watchonly/">
+      <a class="card" href="/watchonly/">
         <span class="badge">Verfügbar</span>
         <h3>Bitcoin-Balance-Monitor</h3>
         <p>Bitcoin-Adresse beobachten: Bestand, Ein- und Ausgänge und Verlauf, mit teilbarem Link.</p>
@@ -51,47 +66,14 @@
 <footer>
   <div class="wrap">
     <span>© <span id="y"></span> bitcoinsats.io · Keine Anlageberatung</span>
-    <span><a href="impressum.html">Impressum</a><a href="datenschutz.html">Datenschutz</a></span>
+    <span><a href="/impressum.html">Impressum</a><a href="/datenschutz.html">Datenschutz</a></span>
   </div>
 </footer>
 
+<script src="/js/site.js"></script>
 <script>
 const $=id=>document.getElementById(id);
 
-/* Theme */
-(function(){
-  let t='light';
-  try{
-    t=localStorage.getItem('theme') ||
-      (matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');
-  }catch(e){}
-
-  setTheme(t);
-})();
-
-function setTheme(t){
-  document.documentElement.dataset.theme=t;
-
-  $('theme').textContent=t==='dark'?'☀':'☾';
-
-  document.querySelectorAll('.logo img').forEach(img=>{
-    img.src=t==='dark'
-      ? img.dataset.dark
-      : img.dataset.light;
-  });
-
-  try{
-    localStorage.setItem('theme',t);
-  }catch(e){}
-}
-
-$('theme').onclick=()=>{
-  setTheme(
-    document.documentElement.dataset.theme==='dark'
-      ? 'light'
-      : 'dark'
-  );
-};
 
 
 

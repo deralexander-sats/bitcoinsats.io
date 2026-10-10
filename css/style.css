@@ -54,6 +54,8 @@
 body{
   margin:0;
   min-height:100vh;
+  display:flex;
+  flex-direction:column;
   background:var(--bg);
   color:var(--ink);
   font:16px/1.6 var(--font);
@@ -75,63 +77,165 @@ body{
   padding:20px 16px;
 }
 
+body > .wrap{
+  flex:1;
+  padding-top:clamp(28px,5vw,56px);
+}
+
 main{
   flex:1;
 }
 
 
-/* ===== Header ===== */
+/* ===== Menüleiste ===== */
 
-.top{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:56px;
+.bar{
+  position:sticky;
+  top:0;
+  z-index:30;
+  background:var(--surface);
+  border-bottom:1px solid var(--line);
+  box-shadow:0 6px 18px -14px rgba(20,24,31,.35);
 }
 
+.bar-in{
+  max-width:960px;
+  margin:0 auto;
+  padding:clamp(10px,1.4vw,16px) 16px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+}
+
+/* Alle Größen hängen an der Schriftgröße des Logos:
+   Mobil 1.4rem (Symbol ca. 40px hoch), Desktop 2rem (ca. 58px). */
 .logo{
   display:flex;
   align-items:center;
-  gap:11px;
-  font-weight:450;
-  font-size:1.3rem;
-  letter-spacing:-.02em;
+  gap:.38em;
+  font-size:clamp(1.4rem,2.4vw + .7rem,2rem);
+  font-weight:600;
+  line-height:1;
+  letter-spacing:-.03em;
   color:inherit;
   text-decoration:none;
 }
 
-
 .logo img,
 .logo svg{
-  width:50px;
-  height:50px;
+  height:1.75em;
+  width:auto;
   display:block;
 }
+
+.logo .logo-dark{ display:none; }
+[data-theme=dark] .logo .logo-light{ display:none; }
+[data-theme=dark] .logo .logo-dark{ display:block; }
 
 .logo i{
   font-style:normal;
   color:var(--ac);
 }
 
-.ic{
-  width:40px;
-  height:40px;
-  border-radius:50%;
+.bar-actions{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.ic,
+.menu-btn{
+  height:clamp(42px,4.4vw,48px);
+  border-radius:999px;
   border:1px solid var(--line);
-  background:var(--surface);
+  background:var(--bg);
   color:var(--ink);
   cursor:pointer;
+  font:inherit;
   font-size:1.05rem;
+}
+
+.ic{
+  width:clamp(42px,4.4vw,48px);
+}
+
+.menu-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  padding:0 16px;
+  font-size:.95rem;
+  font-weight:600;
+}
+
+.ic:hover,
+.menu-btn:hover,
+.menu-btn[aria-expanded=true]{
+  border-color:var(--ac);
+}
+
+.burger,
+.burger::before,
+.burger::after{
+  display:block;
+  width:18px;
+  height:2px;
+  border-radius:2px;
+  background:currentColor;
+}
+
+.burger{
+  position:relative;
+}
+
+.burger::before,
+.burger::after{
+  content:"";
+  position:absolute;
+  left:0;
+}
+
+.burger::before{ top:-6px; }
+.burger::after{ top:6px; }
+
+.menu{
+  border-top:1px solid var(--line);
+  background:var(--surface);
+}
+
+.menu[hidden]{
+  display:none;
+}
+
+.menu a{
+  display:block;
+  max-width:960px;
+  margin:0 auto;
+  padding:14px 16px;
+  color:inherit;
+  text-decoration:none;
+  font-weight:600;
+  border-bottom:1px solid var(--line);
+}
+
+.menu a:last-child{
+  border-bottom:0;
+}
+
+.menu a:hover,
+.menu a[aria-current=page]{
+  color:var(--ac);
 }
 
 
 /* ===== Typography ===== */
 
 h1{
-  font-size:clamp(1.9rem,4.5vw,2.6rem);
-  line-height:1.1;
+  font-size:clamp(2.1rem,6vw,3.4rem);
+  line-height:1.08;
   letter-spacing:-.03em;
-  margin:0 0 16px;
+  margin:0 0 18px;
 }
 
 h1 em{
@@ -196,7 +300,6 @@ h2{
   border:1px solid var(--line);
   border-radius:var(--r);
   padding:22px;
-   margin-bottom:1rem;
   box-shadow:var(--shadow);
   color:inherit;
   text-decoration:none;
@@ -477,11 +580,39 @@ body > .wrap > footer{
 }
 
 
+:focus-visible{
+  outline:2px solid var(--ac);
+  outline-offset:2px;
+}
+
+/* ===== Rechtstexte ===== */
+
+.legal{ max-width:70ch; }
+.legal h2{ font-size:1.05rem; margin:32px 0 8px; }
+.legal p,.legal li{ margin:0 0 10px; }
+.legal a{ color:var(--ac); }
+
+@media (prefers-reduced-motion:reduce){
+  a.card:hover{ transform:none; transition:none; }
+}
+
+
 /* ===== Responsive ===== */
 
 @media (max-width:600px){
-  .top{
-    margin-bottom:40px;
+  .menu-label{
+    display:none;
+  }
+
+  .menu-btn{
+    padding:0;
+    width:42px;
+    justify-content:center;
+  }
+
+  .bar-in{
+    padding-left:14px;
+    padding-right:14px;
   }
 
   .wrap{

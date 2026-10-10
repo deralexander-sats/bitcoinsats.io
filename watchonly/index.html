@@ -5,34 +5,49 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Bitcoin-Balance-Monitor | bitcoinsats.io</title>
 <meta name="description" content="Bitcoin-Adresse beobachten: Bestand, Ein- und Ausgänge, Verlauf. Nur lesend, ohne Anmeldung.">
+<meta name="referrer" content="no-referrer">
+<script>try{document.documentElement.dataset.theme=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light')}catch(e){}</script>
+<link rel="canonical" href="https://bitcoinsats.io/watchonly/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Bitcoin-Balance-Monitor | bitcoinsats.io">
+<meta property="og:description" content="Bitcoin-Adresse beobachten: Bestand, Ein- und Ausgänge, Verlauf. Nur lesend, ohne Anmeldung.">
+<meta property="og:url" content="https://bitcoinsats.io/watchonly/">
 <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/css/style.css">
-  
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 </head>
 <body>
-<div class="wrap">
-  <div class="top">
-   <a class="logo" href="/">
-  <img
-    src="/images/logo.svg"
-    data-light="/images/logo.svg"
-    data-dark="/images/logo-dark.svg"
-    alt="bitcoinsats.io">
-  <span>bitcoin<i>sats</i>.io</span>
-</a>
-    <button class="ic" id="theme" aria-label="Darstellung wechseln">☾</button>
+<header class="bar">
+  <div class="bar-in">
+    <a class="logo" href="/" aria-label="bitcoinsats.io Startseite">
+      <img class="logo-light" src="/images/logo.svg" alt="" width="29" height="34">
+      <img class="logo-dark" src="/images/logo-dark.svg" alt="" width="29" height="34">
+      <span>bitcoin<i>sats</i>.io</span>
+    </a>
+    <div class="bar-actions">
+      <button class="ic" id="theme" type="button" aria-label="Darstellung wechseln">☾</button>
+      <button class="menu-btn" id="menubtn" type="button" aria-expanded="false" aria-controls="menu">
+        <span class="burger" aria-hidden="true"></span><span class="menu-label">Menü</span>
+      </button>
+    </div>
   </div>
-
+  <nav class="menu" id="menu" aria-label="Hauptmenü" hidden>
+    <a href="/">Startseite</a>
+    <a href="/watchonly/">Bitcoin-Balance-Monitor</a>
+    <a href="/impressum.html">Impressum</a>
+    <a href="/datenschutz.html">Datenschutz</a>
+  </nav>
+</header>
+<div class="wrap">
   <h1>Bitcoin-Balance-<em>Monitor</em></h1>
-  <p class="lead">Bitcoin-Adresse eingeben und Bestand beobachten – ohne Private Keys.</p>
+  <p class="lead">Öffentliche Bitcoin-Adresse eingeben und Bestand, Ein- und Ausgänge sowie den Verlauf beobachten. Nur lesend, ohne Anmeldung und ohne private Schlüssel.</p>
 
   <div class="card">
     <div class="search">
-      <input id="addr" placeholder="Bitcoin-Adresse (bc1…, 1… oder 3…)" autocomplete="off" spellcheck="false">
+      <input id="addr" aria-label="Bitcoin-Adresse" placeholder="Bitcoin-Adresse (bc1…, 1… oder 3…)" autocomplete="off" spellcheck="false">
       <button class="btn p" id="go">Anzeigen</button>
     </div>
-    <div id="msg" class="mu" style="margin-top:10px"></div>
+    <div id="msg" class="mu" aria-live="polite" style="margin-top:10px"></div>
   </div>
 
   <div id="out" hidden>
@@ -62,48 +77,15 @@
       <div class="qr"><div id="qrimg"></div><div><div class="mu">QR-Code scannen oder Link weitergeben:</div><div class="l" id="qrlink"></div></div></div>
     </div>
   </div>
-  <footer>Daten von mempool.space · Kein Anlageberatungsangebot · bitcoinsats.io</footer>
+  <footer>Daten von mempool.space · Keine Anlageberatung · bitcoinsats.io · <span><a href="/impressum.html">Impressum</a><a href="/datenschutz.html">Datenschutz</a></span></footer>
 </div>
 
+<script src="/js/site.js"></script>
 <script>
 const API='https://mempool.space/api',BASE='https://bitcoinsats.io/watchonly/';
 const $=id=>document.getElementById(id);
 let cur='BTC',addr='',data=null,price=null,txs=[],timer=null;
 
-/* Theme */
-(function(){
-  let t='light';
-  try{
-    t=localStorage.getItem('theme') ||
-      (matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');
-  }catch(e){}
-
-  setTheme(t);
-})();
-
-function setTheme(t){
-  document.documentElement.dataset.theme=t;
-
-  $('theme').textContent=t==='dark'?'☀':'☾';
-
-  document.querySelectorAll('.logo img').forEach(img=>{
-    img.src=t==='dark'
-      ? img.dataset.dark
-      : img.dataset.light;
-  });
-
-  try{
-    localStorage.setItem('theme',t);
-  }catch(e){}
-}
-
-$('theme').onclick=()=>{
-  setTheme(
-    document.documentElement.dataset.theme==='dark'
-      ? 'light'
-      : 'dark'
-  );
-};
 
   
 function fromUrl(){
@@ -152,12 +134,13 @@ function render(){
   const c=data.chain_stats,m=data.mempool_stats,bal=c.funded_txo_sum-c.spent_txo_sum,pend=m.funded_txo_sum-m.spent_txo_sum;
   $('bal').textContent=fmt(bal);
   $('balsub').textContent=cur==='BTC'||cur==='SATS'?(price?'≈ '+(bal/1e8*price.EUR).toLocaleString('de-DE',{style:'currency',currency:'EUR'}):''):nf(bal/1e8,8)+' BTC';
-  const st=[['Empfangen',fmt(c.funded_txo_sum)],['Gesendet',fmt(c.spent_txo_sum)],['Transaktionen',nf(c.tx_count+m.tx_count)],['BTC-Kurs',price?nf(price.EUR)+' € · '+nf(price.USD)+' $':'–']];
+  const st=[['Empfangen',fmt(c.funded_txo_sum)],['Gesendet',fmt(c.spent_txo_sum)],['Transaktionen',nf(c.tx_count+m.tx_count)],
+    ['Unbestätigt',pend?fmt(pend):'keine'],['BTC-Kurs',price?nf(price.EUR)+' € · '+nf(price.USD)+' $':'–']];
   $('stats').innerHTML=st.map(s=>`<div class="stat"><span>${s[0]}</span><b>${s[1]}</b></div>`).join('');
-  $('txs').innerHTML=txs.length?txs.map(t=>{const n=netOf(t),p=n>=0,k=p?'in':'out';
-    return `<div class="tx"><div class="dot ${k}">${p?'↓':'↑'}</div><div class="m"><b>${p?'Eingang':'Ausgang'}</b>${t.status.confirmed?'':'<span class="pill">unbestätigt</span>'}
+  $('txs').innerHTML=txs.length?txs.map(t=>{const n=netOf(t),p=n>=0,k=p?'in':'out',self=!p&&n===-t.fee&&t.vin.every(v=>v.prevout&&v.prevout.scriptpubkey_address===addr);
+    return `<div class="tx"><div class="dot ${k}">${p?'↓':'↑'}</div><div class="m"><b>${self?'Umbuchung':p?'Eingang':'Ausgang'}</b>${t.status.confirmed?'':'<span class="pill">unbestätigt</span>'}
     <div class="mu">${fmtDate(t.status.block_time)}${t.status.confirmed?' · Block '+nf(t.status.block_height):''} · Gebühr ${nf(t.fee)} sats</div>
-    <a target="_blank" rel="noopener" href="https://mempool.space/tx/${t.txid}">${t.txid.slice(0,14)}…${t.txid.slice(-8)}</a></div>
+    <a target="_blank" rel="noopener noreferrer" href="https://mempool.space/tx/${t.txid}">${t.txid.slice(0,14)}…${t.txid.slice(-8)}</a></div>
     <div class="amt ${k}">${p?'+':'−'}${fmt(Math.abs(n))}</div></div>`}).join(''):'<p class="mu">Keine Transaktionen.</p>';
   $('more').hidden=txs.filter(t=>t.status.confirmed).length>=c.tx_count;
   $('upd').textContent='Stand '+new Date().toLocaleTimeString('de-DE');
@@ -165,13 +148,22 @@ function render(){
 }
 async function load(a,push){
   if(!valid(a)){$('msg').innerHTML='<span class="err">Das ist keine gültige Bitcoin-Adresse.</span>';return}
-  addr=a;$('msg').textContent='Lade …';
+  clearInterval(timer);addr=a;$('msg').textContent='Lade …';
   try{
     const [d,t,p]=await Promise.all([j(`${API}/address/${a}`),j(`${API}/address/${a}/txs`),j(`${API}/v1/prices`).catch(()=>null)]);
     data=d;txs=t;price=p;$('out').hidden=false;$('msg').textContent='';
     if(push)try{history.replaceState(null,'','/watchonly/'+a)}catch(e){try{history.replaceState(null,'','?addr='+a)}catch(_){}}
-    render();clearInterval(timer);timer=setInterval(()=>load(a,false),60000);
-  }catch(e){$('msg').innerHTML='<span class="err">Abruf fehlgeschlagen. Bitte später erneut versuchen.</span>'}
+    render();timer=setInterval(refresh,60000);
+  }catch(e){$('out').hidden=true;$('msg').innerHTML='<span class="err">Abruf fehlgeschlagen. Bitte später erneut versuchen.</span>'}
+}
+async function refresh(){
+  try{
+    const [d,t,p]=await Promise.all([j(`${API}/address/${addr}`),j(`${API}/address/${addr}/txs`),j(`${API}/v1/prices`).catch(()=>null)]);
+    data=d;price=p||price;
+    const byId=new Map(t.map(x=>[x.txid,x])),known=new Set(txs.map(x=>x.txid));
+    txs=[...t.filter(x=>!known.has(x.txid)),...txs.map(x=>byId.get(x.txid)||x)];
+    render();
+  }catch(e){}
 }
 $('go').onclick=()=>load($('addr').value.trim(),true);
 $('addr').onkeydown=e=>{if(e.key==='Enter')$('go').click()};

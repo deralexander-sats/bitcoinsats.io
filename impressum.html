@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Impressum | bitcoinsats.io</title>
+<meta name="description" content="Impressum von bitcoinsats.io">
+<script>try{document.documentElement.dataset.theme=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light')}catch(e){}</script>
+<link rel="canonical" href="https://bitcoinsats.io/impressum.html">
+<link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<header class="bar">
+  <div class="bar-in">
+    <a class="logo" href="/" aria-label="bitcoinsats.io Startseite">
+      <img class="logo-light" src="/images/logo.svg" alt="" width="29" height="34">
+      <img class="logo-dark" src="/images/logo-dark.svg" alt="" width="29" height="34">
+      <span>bitcoin<i>sats</i>.io</span>
+    </a>
+    <div class="bar-actions">
+      <button class="ic" id="theme" type="button" aria-label="Darstellung wechseln">☾</button>
+      <button class="menu-btn" id="menubtn" type="button" aria-expanded="false" aria-controls="menu">
+        <span class="burger" aria-hidden="true"></span><span class="menu-label">Menü</span>
+      </button>
+    </div>
+  </div>
+  <nav class="menu" id="menu" aria-label="Hauptmenü" hidden>
+    <a href="/">Startseite</a>
+    <a href="/watchonly/">Bitcoin-Balance-Monitor</a>
+    <a href="/impressum.html">Impressum</a>
+    <a href="/datenschutz.html">Datenschutz</a>
+  </nav>
+</header>
+<div class="wrap">
+  <main class="legal">
+    <h1>Impressum</h1>
+    <p class="mu">Angaben gemäß § 5 DDG</p>
+
+    <!-- TODO: Angaben in eckigen Klammern durch deine echten Daten ersetzen, bevor die Seite veröffentlicht wird. -->
+    <h2>Anbieter</h2>
+    <p>[VOR- UND NACHNAME]<br>[STRASSE UND HAUSNUMMER]<br>[PLZ UND ORT]<br>Deutschland</p>
+
+    <h2>Kontakt</h2>
+    <p>E-Mail: [E-MAIL-ADRESSE]</p>
+
+    <h2>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</h2>
+    <p>[VOR- UND NACHNAME], Anschrift wie oben</p>
+
+    <h2>Keine Anlageberatung</h2>
+    <p>Die Inhalte und Werkzeuge dieser Seite dienen ausschließlich der Information. Sie stellen keine Anlage-, Steuer- oder Rechtsberatung dar. Die angezeigten Blockchain-Daten und Kurse stammen von mempool.space und werden ohne Gewähr bereitgestellt.</p>
+
+    <h2>Haftung für Links</h2>
+    <p>Diese Seite verlinkt auf externe Seiten (zum Beispiel mempool.space). Auf deren Inhalte haben wir keinen Einfluss. Verantwortlich ist stets der jeweilige Anbieter.</p>
+  </main>
+</div>
+
+<footer>
+  <div class="wrap">
+    <span>© <span id="y"></span> bitcoinsats.io · Keine Anlageberatung</span>
+    <span><a href="/impressum.html">Impressum</a><a href="/datenschutz.html">Datenschutz</a></span>
+  </div>
+</footer>
+
+<script src="/js/site.js"></script>
+<script>document.getElementById('y').textContent=new Date().getFullYear();</script>
+</body>
+</html>
