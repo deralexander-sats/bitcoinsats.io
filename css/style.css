@@ -368,7 +368,7 @@ a.card:hover{
 .quotes-section {
   margin-top: 4rem;
   padding-top: 2rem;
-  border-top: 1px solid var(--line);
+  /*border-top: 1px solid var(--line);*/
 }
 
 .quotes-section h2 {
