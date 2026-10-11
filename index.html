@@ -99,5 +99,47 @@ const $=id=>document.getElementById(id);
   
 $('y').textContent=new Date().getFullYear();
 </script>
+
+
+<script>
+(() => {
+  const frame = document.getElementById('satoshi-quotes');
+  if (!frame) return;
+
+  function sendTheme() {
+    if (!frame.contentWindow) return;
+
+    frame.contentWindow.postMessage({
+      type: 'bitcoinsats-theme',
+      theme: document.documentElement.dataset.theme || 'light'
+    }, location.origin);
+  }
+
+  frame.addEventListener('load', sendTheme);
+
+  const themeObserver = new MutationObserver(sendTheme);
+  themeObserver.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['data-theme']
+  });
+
+  window.addEventListener('message', event => {
+    if (event.origin !== location.origin) return;
+    if (event.source !== frame.contentWindow) return;
+
+    if (event.data?.type === 'satoshi-quotes-height') {
+      const height = Number(event.data.height);
+      if (Number.isFinite(height) && height > 0) {
+        frame.style.height = `${Math.ceil(height)}px`;
+      }
+    }
+  });
+
+  sendTheme();
+})();
+</script>
+
+
+  
 </body>
 </html>
