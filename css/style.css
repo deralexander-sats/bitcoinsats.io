@@ -335,6 +335,7 @@ a.card:hover{
 .card h3{
   margin:10px 0 6px;
   font-size:1.05rem;
+   font-weight: 400;
 }
 
 .card p{
