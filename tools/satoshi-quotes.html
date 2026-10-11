@@ -63,7 +63,81 @@
         }
 
 
+html,
+body {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
 
+body {
+    min-height: 0;
+    display: block;
+}
+
+body > main {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+/* Hellmodus */
+html[data-theme="light"] body {
+    background: #FBF8F3;
+    color: #14181F;
+}
+
+html[data-theme="light"] body > main {
+    background: #FFFFFF;
+}
+
+html[data-theme="light"] .bg-btc-darkBg {
+    background-color: #FBF8F3 !important;
+}
+
+html[data-theme="light"] .bg-btc-cardBg {
+    background-color: #FFFFFF !important;
+}
+
+html[data-theme="light"] .border-btc-border {
+    border-color: #ECE6DB !important;
+}
+
+html[data-theme="light"] .text-white,
+html[data-theme="light"] .text-gray-100 {
+    color: #14181F !important;
+}
+
+html[data-theme="light"] .text-gray-200,
+html[data-theme="light"] .text-gray-300 {
+    color: #374151 !important;
+}
+
+html[data-theme="light"] .text-gray-400,
+html[data-theme="light"] .text-gray-500,
+html[data-theme="light"] .text-gray-600 {
+    color: #6B7280 !important;
+}
+
+html[data-theme="light"] input,
+html[data-theme="light"] select {
+    color: #14181F;
+}
+
+html[data-theme="light"] input::placeholder {
+    color: #6B7280;
+}
+
+html[data-theme="light"] ::-webkit-scrollbar-track {
+    background: #FBF8F3;
+}
+
+html[data-theme="light"] ::-webkit-scrollbar-thumb {
+    background: #ECE6DB;
+}
 
     </style>
 </head>
