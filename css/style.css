@@ -282,7 +282,7 @@ p em{
 
 
 .hero-statement {
-  font-size: clamp(1.25rem, 2.5vw, 2rem);
+  font-size: clamp(1.75rem, 2.5vw, 2rem);
   line-height: 1.4;
   max-width: 770px;
    margin: 0 auto 45px;
