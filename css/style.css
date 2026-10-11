@@ -294,10 +294,10 @@ p em{
 
 
 .hero-statement-sats {
-  margin:0;
   color:var(--mu);
-  font-size:.92rem;
-  font-weight: 400;
+  font-size:1.12rem;
+  max-width:60ch;
+  margin:0 0 28px;
 }
 
 .btn{
