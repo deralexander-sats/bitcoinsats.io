@@ -292,6 +292,14 @@ p em{
     text-align: center;
 }
 
+
+.hero-statement-sats {
+  margin:0;
+  color:var(--mu);
+  font-size:.92rem;
+  font-weight: 400;
+}
+
 .btn{
   display:inline-block;
   padding:13px 24px;
