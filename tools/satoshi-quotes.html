@@ -1,1 +1,504 @@
 
+<!DOCTYPE html>
+<html lang="de" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Satoshi Nakamoto - Famous Quotes Slider</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        btc: {
+                            orange: '#f7931a',
+                            gold: '#f2a900',
+                            darkBg: '#0f1117',
+                            cardBg: '#181b24',
+                            border: '#2a2e3d'
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.4s ease-in-out',
+                        'pulse-glow': 'pulseGlow 2s infinite'
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(8px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        pulseGlow: {
+                            '0%, 100%': { boxShadow: '0 0 15px rgba(247, 147, 26, 0.2)' },
+                            '50%': { boxShadow: '0 0 25px rgba(247, 147, 26, 0.4)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f1117;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2a2e3d;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #f7931a;
+        }
+        .quote-slide {
+            transition: opacity 0.35s ease, transform 0.35s ease;
+        }
+    </style>
+</head>
+<body class="bg-btc-darkBg text-gray-100 min-h-screen flex flex-col justify-center items-center p-4 sm:p-6 font-sans">
+
+    <main class="w-full max-w-3xl bg-btc-cardBg border border-btc-border rounded-2xl shadow-2xl overflow-hidden backdrop-blur-md relative">
+        
+        <!-- Top Glow Accent Header Line -->
+        <div class="h-1 w-full bg-gradient-to-r from-btc-gold via-btc-orange to-yellow-500"></div>
+
+        <div class="p-6 sm:p-8">
+            
+            <header class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-btc-border/60">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-btc-orange/10 border border-btc-orange/30 flex items-center justify-center text-btc-orange">
+                        <i data-lucide="bitcoin" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold tracking-wide text-white flex items-center gap-2">
+                            Satoshi Nakamoto
+                            <span class="text-xs font-medium px-2 py-0.5 rounded-full bg-btc-orange/20 text-btc-orange border border-btc-orange/30">Creator of Bitcoin</span>
+                        </h1>
+                        <p class="text-xs text-gray-400">Timeless thoughts on money, trust & decentralization</p>
+                    </div>
+                </div>
+
+                <!-- Category Filter Dropdown -->
+                <div class="relative min-w-[180px]">
+                    <select id="categoryFilter" class="w-full bg-btc-darkBg border border-btc-border rounded-lg px-3 py-1.5 text-xs text-gray-300 focus:outline-none focus:border-btc-orange transition-colors cursor-pointer">
+                        <option value="All">Alle Kategorien (7)</option>
+                        <option value="Trust & Fiat">Trust & Fiat</option>
+                        <option value="Vision & Adoption">Vision & Adoption</option>
+                        <option value="Technical Design">Technical Design</option>
+                        <option value="Economics">Economics</option>
+                    </select>
+                </div>
+            </header>
+
+            <div class="mt-4 relative">
+                <input type="text" id="searchInput" placeholder="Zitate durchsuchen..." class="w-full bg-btc-darkBg/60 border border-btc-border rounded-lg pl-9 pr-4 py-1.5 text-xs text-gray-200 placeholder-gray-500 focus:outline-none focus:border-btc-orange/80 transition-all">
+                <i data-lucide="search" class="w-4 h-4 text-gray-500 absolute left-2.5 top-2"></i>
+                <button id="clearSearch" class="hidden absolute right-2.5 top-2 text-gray-500 hover:text-gray-300 text-xs">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+
+            <div id="sliderViewport" class="relative my-8 min-h-[200px] flex flex-col justify-between select-none touch-pan-y cursor-grab active:cursor-grabbing">
+                
+                <!-- Quote Mark Decoration -->
+                <div class="absolute -top-3 -left-2 text-btc-orange/15 pointer-events-none">
+                    <i data-lucide="quote" class="w-16 h-16 sm:w-20 sm:h-20"></i>
+                </div>
+
+                <!-- Interactive Quote Text & Info Container -->
+                <div id="quoteCard" class="quote-slide relative z-10 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <span id="quoteCategory" class="text-[11px] font-semibold tracking-wider uppercase text-btc-gold bg-btc-gold/10 px-2.5 py-1 rounded-md border border-btc-gold/20">
+                            Category
+                        </span>
+                        <span id="quoteDate" class="text-xs text-gray-400 font-mono flex items-center gap-1">
+                            <i data-lucide="calendar" class="w-3 h-3"></i>
+                            <span>Date</span>
+                        </span>
+                    </div>
+
+                    <blockquote id="quoteText" class="text-lg sm:text-xl font-medium leading-relaxed text-gray-100 pt-2 italic">
+                        "Loading Satoshi's quote..."
+                    </blockquote>
+
+                    <!-- Deutsche Übersetzung -->
+                    <p id="quoteTextDe" class="text-sm text-gray-400 font-normal leading-relaxed pl-3 border-l-2 border-btc-orange/50 italic">
+                        "Lade Übersetzung..."
+                    </p>
+
+                    <div class="text-xs text-gray-400 border-l-2 border-btc-orange/50 pl-3 py-0.5">
+                        <span id="quoteContext">Context snippet</span>
+                    </div>
+                </div>
+
+                <!-- No Results State (Hidden by default) -->
+                <div id="noResults" class="hidden my-8 text-center py-8 text-gray-400">
+                    <i data-lucide="search-x" class="w-10 h-10 mx-auto text-gray-600 mb-2"></i>
+                    <p class="text-sm">Kein Zitat für diese Suche gefunden.</p>
+                </div>
+            </div>
+
+            <div class="pt-4 border-t border-btc-border/60 flex flex-col sm:flex-row items-center justify-between gap-4">
+                
+                <!-- Counter & Quick Actions -->
+                <div class="flex items-center gap-3">
+                    <span id="quoteCounter" class="text-xs font-mono font-semibold text-gray-400 bg-btc-darkBg px-2.5 py-1 rounded-md border border-btc-border">
+                        1 / 7
+                    </span>
+
+                    <!-- Copy Quote Button -->
+                    <button id="copyBtn" title="Zitat kopieren" class="p-2 rounded-lg bg-btc-darkBg hover:bg-btc-border/50 text-gray-300 hover:text-white border border-btc-border transition-all flex items-center gap-1.5 text-xs">
+                        <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                        <span id="copyText" class="hidden sm:inline">Kopieren</span>
+                    </button>
+
+                    <!-- Auto-play Toggle Button -->
+                    <button id="playPauseBtn" title="Autoplay umschalten" class="p-2 rounded-lg bg-btc-darkBg hover:bg-btc-border/50 text-gray-300 hover:text-white border border-btc-border transition-all flex items-center gap-1.5 text-xs">
+                        <i id="playPauseIcon" data-lucide="pause" class="w-3.5 h-3.5 text-btc-orange"></i>
+                    </button>
+                </div>
+
+                <!-- Navigation Dots -->
+                <div id="dotsContainer" class="flex items-center gap-1.5 overflow-x-auto max-w-[180px] sm:max-w-xs py-1">
+                    <!-- Dots generated dynamically via JS -->
+                </div>
+
+                <!-- Arrow Buttons -->
+                <div class="flex items-center gap-2">
+                    <button id="prevBtn" aria-label="Vorheriges Zitat" class="p-2.5 rounded-lg bg-btc-darkBg hover:bg-btc-orange hover:text-black text-gray-300 border border-btc-border transition-all active:scale-95">
+                        <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                    </button>
+                    <button id="nextBtn" aria-label="Nächstes Zitat" class="p-2.5 rounded-lg bg-btc-darkBg hover:bg-btc-orange hover:text-black text-gray-300 border border-btc-border transition-all active:scale-95">
+                        <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Toast Notification (Copied to Clipboard) -->
+        <div id="toast" class="absolute bottom-4 right-4 bg-btc-orange text-black font-semibold text-xs px-3 py-1.5 rounded-md shadow-lg transform translate-y-12 opacity-0 transition-all duration-300 flex items-center gap-1.5">
+            <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+            <span>In Zwischenablage kopiert!</span>
+        </div>
+    </main>
+
+    <script>
+        /*
+         * SATOSHI NAKAMOTO QUOTE SLIDER WIDGET
+         * Self-contained JavaScript logic including touch events, autoplay, 
+         * category filtering, and clipboard handling.
+         */
+
+        // Data array containing Satoshi Nakamoto's quotes
+        const satoshiQuotes = [
+            {
+                id: 1,
+                quote: "If you don't believe it or don't get it, I don't have the time to try to convince you, sorry.",
+                quoteDe: "Wenn du es nicht glaubst oder nicht verstehst, habe ich keine Zeit, dich zu überzeugen, tut mir leid.",
+                category: "Vision & Adoption",
+                date: "2010-07-29",
+                context: "Bitcointalk Forum (Response to Dan Larimer regarding transaction speed)"
+            },
+            {
+                id: 2,
+                quote: "The root problem with conventional currency is all the trust that's required to make it work. The central bank must be trusted not to debase the currency, but the history of fiat currencies is full of breaches of that trust.",
+                quoteDe: "Das Grundproblem herkömmlicher Währungen ist das ganze Vertrauen, das erforderlich ist, damit sie funktionieren. Der Zentralbank muss vertraut werden, dass sie die Währung nicht entwertet, aber die Geschichte der Fiat-Währungen ist voll von Vertrauensbrüchen.",
+                category: "Trust & Fiat",
+                date: "2009-02-11",
+                context: "P2P Foundation Forum (Introducing Bitcoin)"
+            },
+            {
+                id: 3,
+                quote: "It might make sense just to get some in case it catches on.",
+                quoteDe: "Es könnte Sinn machen, sich einfach ein paar zu besorgen, falls es sich durchsetzt.",
+                category: "Economics",
+                date: "2009-01-17",
+                context: "Cryptography Mailing List"
+            },
+            {
+                id: 4,
+                quote: "The nature of Bitcoin is such that once version 0.1 was released, the core design was set in stone for the rest of its lifetime.",
+                quoteDe: "Die Natur von Bitcoin ist so beschaffen, dass das Kern-Design mit der Veröffentlichung von Version 0.1 für den Rest seiner Lebensdauer in Stein gemeißelt war.",
+                category: "Technical Design",
+                date: "2010-06-17",
+                context: "Bitcointalk Forum"
+            },
+            {
+                id: 5,
+                quote: "Lost coins only make everyone else's coins worth a slightly bit more. Think of it as a donation to everyone.",
+                quoteDe: "Verlorene Coins machen die Coins aller anderen nur ein wenig wertvoller. Sieh es als eine Spende an alle.",
+                category: "Economics",
+                date: "2010-06-21",
+                context: "Bitcointalk Forum"
+            },
+            {
+                id: 6,
+                quote: "A lot of people automatically dismiss e-currency as a lost cause because of all the companies that failed since the 1990s.",
+                quoteDe: "Viele Menschen tun digitale Währungen automatisch als aussichtslos ab, wegen all der Unternehmen, die seit den 1990er Jahren gescheitert sind.",
+                category: "Vision & Adoption",
+                date: "2009-02-11",
+                context: "P2P Foundation Announcement"
+            },
+            {
+                id: 7,
+                quote: "I'm sure that in 20 years there will either be very large transaction volume or no volume.",
+                quoteDe: "Ich bin mir sicher, dass es in 20 Jahren entweder ein sehr großes Transaktionsvolumen oder gar kein Volumen geben wird.",
+                category: "Vision & Adoption",
+                date: "2010-02-14",
+                context: "Bitcointalk Forum"
+            }
+        ];
+
+        // State Variables
+        let filteredQuotes = [...satoshiQuotes];
+        let currentIndex = 0;
+        let autoplayInterval = null;
+        let isPlaying = true;
+        const AUTOPLAY_DELAY = 6000; // 6 seconds
+
+        // DOM Elements
+        const quoteCard = document.getElementById('quoteCard');
+        const quoteText = document.getElementById('quoteText');
+        const quoteTextDe = document.getElementById('quoteTextDe');
+        const quoteCategory = document.getElementById('quoteCategory');
+        const quoteDate = document.getElementById('quoteDate');
+        const quoteContext = document.getElementById('quoteContext');
+        const quoteCounter = document.getElementById('quoteCounter');
+        const dotsContainer = document.getElementById('dotsContainer');
+        const categoryFilter = document.getElementById('categoryFilter');
+        const searchInput = document.getElementById('searchInput');
+        const clearSearchBtn = document.getElementById('clearSearch');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        const playPauseIcon = document.getElementById('playPauseIcon');
+        const copyBtn = document.getElementById('copyBtn');
+        const toast = document.getElementById('toast');
+        const noResults = document.getElementById('noResults');
+        const sliderViewport = document.getElementById('sliderViewport');
+
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Render Current Quote with smooth fade transition
+        function renderQuote(direction = 'next') {
+            if (filteredQuotes.length === 0) {
+                quoteCard.classList.add('hidden');
+                noResults.classList.remove('hidden');
+                quoteCounter.textContent = '0 / 0';
+                dotsContainer.innerHTML = '';
+                return;
+            }
+
+            quoteCard.classList.remove('hidden');
+            noResults.classList.add('hidden');
+
+            // Apply fade-out animation
+            quoteCard.style.opacity = '0';
+            quoteCard.style.transform = direction === 'next' ? 'translateX(12px)' : 'translateX(-12px)';
+
+            setTimeout(() => {
+                const current = filteredQuotes[currentIndex];
+                quoteText.textContent = `"${current.quote}"`;
+                quoteTextDe.textContent = `"${current.quoteDe}"`;
+                quoteCategory.textContent = current.category;
+                quoteDate.querySelector('span').textContent = current.date;
+                quoteContext.textContent = current.context;
+                quoteCounter.textContent = `${currentIndex + 1} / ${filteredQuotes.length}`;
+
+                // Update Dots Navigation
+                renderDots();
+
+                // Apply fade-in
+                quoteCard.style.opacity = '1';
+                quoteCard.style.transform = 'translateX(0)';
+            }, 180);
+        }
+
+        // Render Navigation Dots
+        function renderDots() {
+            dotsContainer.innerHTML = '';
+            filteredQuotes.forEach((_, idx) => {
+                const dot = document.createElement('button');
+                dot.ariaLabel = `Go to quote ${idx + 1}`;
+                dot.className = `h-2 rounded-full transition-all duration-300 ${
+                    idx === currentIndex 
+                        ? 'w-6 bg-btc-orange' 
+                        : 'w-2 bg-btc-border hover:bg-gray-400'
+                }`;
+                dot.addEventListener('click', () => {
+                    currentIndex = idx;
+                    renderQuote(idx > currentIndex ? 'next' : 'prev');
+                    resetAutoplay();
+                });
+                dotsContainer.appendChild(dot);
+            });
+        }
+
+        // Navigation Handlers
+        function nextQuote() {
+            if (filteredQuotes.length === 0) return;
+            currentIndex = (currentIndex + 1) % filteredQuotes.length;
+            renderQuote('next');
+        }
+
+        function prevQuote() {
+            if (filteredQuotes.length === 0) return;
+            currentIndex = (currentIndex - 1 + filteredQuotes.length) % filteredQuotes.length;
+            renderQuote('prev');
+        }
+
+        // Filtering and Search Logic
+        function filterQuotes() {
+            const selectedCategory = categoryFilter.value;
+            const query = searchInput.value.toLowerCase().trim();
+
+            filteredQuotes = satoshiQuotes.filter(item => {
+                const matchesCategory = selectedCategory === 'All' || item.category === selectedCategory;
+                const matchesQuery = item.quote.toLowerCase().includes(query) || 
+                                     item.quoteDe.toLowerCase().includes(query) || 
+                                     item.context.toLowerCase().includes(query);
+                return matchesCategory && matchesQuery;
+            });
+
+            currentIndex = 0;
+            renderQuote('next');
+            resetAutoplay();
+        }
+
+        // Autoplay Functions
+        function startAutoplay() {
+            if (!autoplayInterval && isPlaying) {
+                autoplayInterval = setInterval(nextQuote, AUTOPLAY_DELAY);
+            }
+        }
+
+        function stopAutoplay() {
+            if (autoplayInterval) {
+                clearInterval(autoplayInterval);
+                autoplayInterval = null;
+            }
+        }
+
+        function resetAutoplay() {
+            stopAutoplay();
+            startAutoplay();
+        }
+
+        function togglePlayPause() {
+            isPlaying = !isPlaying;
+            if (isPlaying) {
+                startAutoplay();
+                playPauseIcon.setAttribute('data-lucide', 'pause');
+                playPauseIcon.classList.add('text-btc-orange');
+            } else {
+                stopAutoplay();
+                playPauseIcon.setAttribute('data-lucide', 'play');
+                playPauseIcon.classList.remove('text-btc-orange');
+            }
+            lucide.createIcons();
+        }
+
+        // Copy Quote to Clipboard
+        function copyToClipboard() {
+            if (filteredQuotes.length === 0) return;
+            const current = filteredQuotes[currentIndex];
+            const textToCopy = `"${current.quote}"\n("${current.quoteDe}")\n— Satoshi Nakamoto (${current.date})`;
+
+            // ExecCommand Fallback for safe iframe execution
+            const tempInput = document.createElement('textarea');
+            tempInput.value = textToCopy;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+
+            // Show Toast
+            showToast();
+        }
+
+        function showToast() {
+            toast.classList.remove('translate-y-12', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-12', 'opacity-0');
+            }, 2500);
+        }
+
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        sliderViewport.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        sliderViewport.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, { passive: true });
+
+        function handleSwipe() {
+            const threshold = 40; // minimum distance for swipe
+            if (touchEndX < touchStartX - threshold) {
+                nextQuote();
+                resetAutoplay();
+            }
+            if (touchEndX > touchStartX + threshold) {
+                prevQuote();
+                resetAutoplay();
+            }
+        }
+
+        // Keyboard Navigation (Arrow Left/Right)
+        document.addEventListener('keydown', (e) => {
+            if (document.activeElement === searchInput) return; // Ignore if user is typing in search
+            if (e.key === 'ArrowRight') {
+                nextQuote();
+                resetAutoplay();
+            } else if (e.key === 'ArrowLeft') {
+                prevQuote();
+                resetAutoplay();
+            }
+        });
+
+        // Event Listeners
+        nextBtn.addEventListener('click', () => { nextQuote(); resetAutoplay(); });
+        prevBtn.addEventListener('click', () => { prevQuote(); resetAutoplay(); });
+        playPauseBtn.addEventListener('click', togglePlayPause);
+        copyBtn.addEventListener('click', copyToClipboard);
+
+        categoryFilter.addEventListener('change', filterQuotes);
+        searchInput.addEventListener('input', () => {
+            clearSearchBtn.classList.toggle('hidden', searchInput.value === '');
+            filterQuotes();
+        });
+
+        clearSearchBtn.addEventListener('click', () => {
+            searchInput.value = '';
+            clearSearchBtn.classList.add('hidden');
+            filterQuotes();
+        });
+
+        // Pause autoplay when hovering over slider for readability
+        sliderViewport.addEventListener('mouseenter', stopAutoplay);
+        sliderViewport.addEventListener('mouseleave', () => { if (isPlaying) startAutoplay(); });
+
+        // Initial Load
+        window.onload = function() {
+            renderQuote();
+            startAutoplay();
+        };
+    </script>
+</body>
+</html>
