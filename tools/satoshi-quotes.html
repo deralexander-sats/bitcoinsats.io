@@ -79,9 +79,8 @@ body > main {
     width: 100%;
     max-width: none;
     margin: 0;
-    border: 0;
-    border-radius: 0;
-    box-shadow: none;
+    border-radius: 16px;
+    box-sizing: border-box;
 }
 
 /* Hellmodus */
@@ -139,12 +138,73 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb {
     background: #ECE6DB;
 }
 
+        
+/* Theme der Hauptseite übernehmen */
+html[data-theme="light"] body {
+    background: #FBF8F3 !important;
+    color: #14181F !important;
+}
+
+html[data-theme="light"] body > main {
+    background: #FFFFFF !important;
+    border-color: #ECE6DB !important;
+}
+
+html[data-theme="light"] .bg-btc-darkBg,
+html[data-theme="light"] .bg-btc-darkBg\/60 {
+    background-color: #FBF8F3 !important;
+}
+
+html[data-theme="light"] .bg-btc-cardBg {
+    background-color: #FFFFFF !important;
+}
+
+html[data-theme="light"] [class*="border-btc-border"] {
+    border-color: #ECE6DB !important;
+}
+
+html[data-theme="light"] .text-white,
+html[data-theme="light"] .text-gray-100,
+html[data-theme="light"] .text-gray-200 {
+    color: #14181F !important;
+}
+
+html[data-theme="light"] .text-gray-300 {
+    color: #374151 !important;
+}
+
+html[data-theme="light"] .text-gray-400,
+html[data-theme="light"] .text-gray-500,
+html[data-theme="light"] .text-gray-600 {
+    color: #6B7280 !important;
+}
+
+html[data-theme="light"] input,
+html[data-theme="light"] select {
+    color: #14181F !important;
+}
+
+html[data-theme="light"] input::placeholder {
+    color: #6B7280 !important;
+}
+
+html[data-theme="light"] ::-webkit-scrollbar-track {
+    background: #FBF8F3;
+}
+
+html[data-theme="light"] ::-webkit-scrollbar-thumb {
+    background: #ECE6DB;
+}
+
+
     </style>
 </head>
 <body class="bg-btc-darkBg text-gray-100 min-h-screen flex flex-col justify-center items-center p-4 sm:p-6 font-sans">
 
    <!-- <main class="w-full max-w-3xl bg-btc-cardBg border border-btc-border rounded-2xl shadow-2xl overflow-hidden backdrop-blur-md relative">-->
-<main class="w-full max-w-none bg-btc-cardBg overflow-hidden relative">
+
+<main class="w-full max-w-none bg-btc-cardBg border border-btc-border rounded-2xl shadow-2xl overflow-hidden backdrop-blur-md relative">
+
         
         <!-- Top Glow Accent Header Line -->
         <div class="h-1 w-full bg-gradient-to-r from-btc-gold via-btc-orange to-yellow-500"></div>
@@ -581,25 +641,31 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb {
     </script>
 
 
+
 <script>
 (() => {
+  function applyTheme(theme) {
+    const isDark = theme === 'dark';
+
+    document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
+    document.body.dataset.theme = isDark ? 'dark' : 'light';
+    document.documentElement.classList.toggle('dark', isDark);
+  }
+
   window.addEventListener('message', event => {
     if (event.origin !== location.origin) return;
     if (event.data?.type !== 'bitcoinsats-theme') return;
 
-    const theme = event.data.theme === 'dark' ? 'dark' : 'light';
-    document.documentElement.dataset.theme = theme;
-    document.body.dataset.theme = theme;
+    applyTheme(event.data.theme);
   });
 
   function reportHeight() {
     const main = document.querySelector('body > main');
     if (!main) return;
 
-    const height = Math.ceil(main.getBoundingClientRect().height);
     parent.postMessage({
       type: 'satoshi-quotes-height',
-      height
+      height: Math.ceil(main.getBoundingClientRect().height)
     }, location.origin);
   }
 
@@ -607,13 +673,11 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb {
   window.addEventListener('resize', reportHeight);
 
   if ('ResizeObserver' in window) {
-    const observer = new ResizeObserver(reportHeight);
-    observer.observe(document.body);
+    new ResizeObserver(reportHeight).observe(document.body);
   }
-
-  reportHeight();
 })();
 </script>
+
 
 
     
