@@ -69,8 +69,8 @@
 </head>
 <body class="bg-btc-darkBg text-gray-100 min-h-screen flex flex-col justify-center items-center p-4 sm:p-6 font-sans">
 
-    <main class="w-full max-w-3xl bg-btc-cardBg border border-btc-border rounded-2xl shadow-2xl overflow-hidden backdrop-blur-md relative">
-
+   <!-- <main class="w-full max-w-3xl bg-btc-cardBg border border-btc-border rounded-2xl shadow-2xl overflow-hidden backdrop-blur-md relative">-->
+<main class="w-full max-w-none bg-btc-cardBg overflow-hidden relative">
         
         <!-- Top Glow Accent Header Line -->
         <div class="h-1 w-full bg-gradient-to-r from-btc-gold via-btc-orange to-yellow-500"></div>
@@ -505,5 +505,43 @@
             startAutoplay();
         };
     </script>
+
+
+<script>
+(() => {
+  window.addEventListener('message', event => {
+    if (event.origin !== location.origin) return;
+    if (event.data?.type !== 'bitcoinsats-theme') return;
+
+    const theme = event.data.theme === 'dark' ? 'dark' : 'light';
+    document.documentElement.dataset.theme = theme;
+    document.body.dataset.theme = theme;
+  });
+
+  function reportHeight() {
+    const main = document.querySelector('body > main');
+    if (!main) return;
+
+    const height = Math.ceil(main.getBoundingClientRect().height);
+    parent.postMessage({
+      type: 'satoshi-quotes-height',
+      height
+    }, location.origin);
+  }
+
+  window.addEventListener('load', reportHeight);
+  window.addEventListener('resize', reportHeight);
+
+  if ('ResizeObserver' in window) {
+    const observer = new ResizeObserver(reportHeight);
+    observer.observe(document.body);
+  }
+
+  reportHeight();
+})();
+</script>
+
+
+    
 </body>
 </html>
