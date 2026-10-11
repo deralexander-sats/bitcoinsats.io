@@ -279,6 +279,9 @@ h2{
     font-size: 321.5%;
 }
 
+.startstatement {
+    text-align: center;
+}
 
 .btn{
   display:inline-block;
