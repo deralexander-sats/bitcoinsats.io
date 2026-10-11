@@ -269,7 +269,13 @@ h2{
   color:var(--out);
 }
 
-
+p em{
+  font-style:normal;
+  background:linear-gradient(90deg,var(--ac),var(--ac2));
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
 /* =========================================================
    Startseite
    ========================================================= */
