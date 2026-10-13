@@ -1,1 +1,280 @@
 
+<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UTXO-Rechner | bitcoinsats.io</title>
+<meta name="description" content="UTXO-Rechner: Wie viele UTXOs entstehen durch regelmäßige Bitcoin-Käufe, was kostet die Konsolidierung und ab wann wird ein UTXO unwirtschaftlich? Lokal im Browser, ohne Anmeldung.">
+<meta name="referrer" content="no-referrer">
+<script>try{document.documentElement.dataset.theme=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light')}catch(e){}</script>
+<link rel="canonical" href="https://bitcoinsats.io/utxo-rechner/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="UTXO-Rechner | bitcoinsats.io">
+<meta property="og:description" content="UTXOs durch regelmäßige Käufe, Konsolidierungsgebühren und Dust-Schwellenwerte berechnen. Lokal im Browser, ohne Anmeldung.">
+<meta property="og:url" content="https://bitcoinsats.io/utxo-rechner/">
+<link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/css/utxo-calculator.css">
+</head>
+<body>
+<header class="bar">
+  <div class="bar-in">
+    <a class="logo" href="/" aria-label="bitcoinsats.io Startseite">
+      <img class="logo-light" src="/images/logo.svg" alt="" width="120" height="34">
+      <img class="logo-dark" src="/images/logo-dark.svg" alt="" width="120" height="34">
+
+    </a>
+    <div class="bar-actions">
+      <button class="ic" id="theme" type="button" aria-label="Darstellung wechseln">☾</button>
+      <button class="menu-btn" id="menubtn" type="button" aria-expanded="false" aria-controls="menu">
+        <span class="burger" aria-hidden="true"></span><span class="menu-label">Menü</span>
+      </button>
+    </div>
+  </div>
+  <nav class="menu" id="menu" aria-label="Hauptmenü" hidden>
+    <a href="/">Startseite</a>
+    <a href="/watchonly/">Bitcoin-Balance-Monitor</a>
+    <a href="/utxo-rechner/">UTXO-Rechner</a>
+    <a href="/impressum.html">Impressum</a>
+    <a href="/datenschutz.html">Datenschutz</a>
+  </nav>
+</header>
+<div class="wrap">
+  <main>
+    <h1>UTXO-<em>Rechner</em></h1>
+    <p class="lead">Wie viele UTXOs entstehen durch regelmäßige Bitcoin-Käufe, was kostet es, sie später zusammenzuführen, und ab welcher Gebühr lohnt sich die Ausgabe kleiner UTXOs nicht mehr? Alle Berechnungen laufen lokal in deinem Browser.</p>
+
+    <div class="uc" id="uc">
+  <!-- ===================== Eingaben ===================== -->
+  <section class="uc-card" aria-labelledby="uc-t-in">
+    <h2 id="uc-t-in">Eingaben</h2>
+    <p class="uc-card-sub">Die Ergebnisse aktualisieren sich bei jeder Änderung sofort.</p>
+
+    <div class="uc-sec">
+      <span class="uc-lbl" id="uc-l-mode">Bestand</span>
+      <div class="uc-seg" role="group" aria-labelledby="uc-l-mode" id="uc-mode">
+        <button type="button" data-v="dca" aria-pressed="true">Regelmäßige Käufe (DCA)</button>
+        <button type="button" data-v="custom" aria-pressed="false">Eigener Bestand</button>
+      </div>
+    </div>
+
+    <!-- DCA -->
+    <div class="uc-sec" id="uc-dca">
+      <div class="uc-grid">
+        <div class="uc-field">
+          <label for="uc-amount">Betrag pro Kauf</label>
+          <div class="uc-ix"><input class="uc-input" id="uc-amount" type="text" inputmode="decimal" autocomplete="off" value="50"><span class="uc-unit">€</span></div>
+          <div class="uc-err" id="uc-err-amount" hidden></div>
+        </div>
+        <div class="uc-field">
+          <span class="uc-lbl" id="uc-l-freq">Rhythmus</span>
+          <div class="uc-seg" role="group" aria-labelledby="uc-l-freq" id="uc-freq">
+            <button type="button" data-v="weekly" aria-pressed="true">Wöchentlich</button>
+            <button type="button" data-v="biweekly" aria-pressed="false">Alle 2 Wochen</button>
+            <button type="button" data-v="monthly" aria-pressed="false">Monatlich</button>
+          </div>
+        </div>
+        <div class="uc-field">
+          <label for="uc-years">Zeitraum</label>
+          <div class="uc-ix"><input class="uc-input" id="uc-years" type="text" inputmode="decimal" autocomplete="off" value="5"><span class="uc-unit">Jahre</span></div>
+          <div class="uc-chips" id="uc-year-chips" aria-label="Zeitraum-Vorschläge">
+            <button type="button" class="uc-chip" data-v="1" aria-pressed="false">1</button>
+            <button type="button" class="uc-chip" data-v="3" aria-pressed="false">3</button>
+            <button type="button" class="uc-chip" data-v="5" aria-pressed="true">5</button>
+            <button type="button" class="uc-chip" data-v="10" aria-pressed="false">10</button>
+          </div>
+          <div class="uc-err" id="uc-err-years" hidden></div>
+        </div>
+        <div class="uc-field">
+          <label for="uc-buyprice">Ø Kaufkurs (optional)</label>
+          <div class="uc-ix"><input class="uc-input" id="uc-buyprice" type="text" inputmode="decimal" autocomplete="off" value="60000"><span class="uc-unit">€/BTC</span></div>
+          <span class="uc-hint">Voreingestellter Beispielwert – bitte anpassen. Ohne Kurs wird nur die Anzahl der UTXOs berechnet.</span>
+          <div class="uc-err" id="uc-err-buyPrice" hidden></div>
+        </div>
+      </div>
+      <p class="uc-mu" style="margin-top:12px">Annahme: Jeder Kauf wird an eine neue Adresse ausgezahlt und ergibt einen eigenen UTXO.</p>
+    </div>
+
+    <!-- Eigener Bestand -->
+    <div class="uc-sec" id="uc-custom" hidden>
+      <div class="uc-field">
+        <label for="uc-list">Deine UTXOs</label>
+        <textarea class="uc-input" id="uc-list" spellcheck="false" autocomplete="off" aria-describedby="uc-list-hint">10 x 50000
+20 x 20000
+100000</textarea>
+        <span class="uc-hint" id="uc-list-hint">Eine Zeile pro UTXO oder <code>Anzahl x Betrag</code>, z. B. <code>25 x 40000</code>. Leerzeilen und Zeilen mit <code>#</code> werden ignoriert. Die Beträge stehen auf der UTXO-Ansicht deiner Wallet (Coin Control).</span>
+        <div class="uc-err" id="uc-err-list" hidden></div>
+      </div>
+      <div class="uc-field" style="margin-top:14px;max-width:320px">
+        <span class="uc-lbl" id="uc-l-unit">Einheit der Beträge</span>
+        <div class="uc-seg" role="group" aria-labelledby="uc-l-unit" id="uc-unit">
+          <button type="button" data-v="sats" aria-pressed="true">Sats</button>
+          <button type="button" data-v="btc" aria-pressed="false">BTC</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gebühr -->
+    <div class="uc-sec">
+      <div class="uc-grid">
+        <div class="uc-field">
+          <label for="uc-rate">Erwartete Gebühr bei der Konsolidierung</label>
+          <div class="uc-ix"><input class="uc-input" id="uc-rate" type="text" inputmode="decimal" autocomplete="off" value="10"><span class="uc-unit">sat/vB</span></div>
+          <input type="range" id="uc-slider" min="0" max="300" step="1" value="100" aria-label="Gebührenrate in sat/vB (logarithmische Skala von 1 bis 1000)">
+          <div class="uc-chips" id="uc-presets" aria-label="Gebühren-Vorschläge">
+            <button type="button" class="uc-chip" data-v="2" aria-pressed="false">Niedrig · 2</button>
+            <button type="button" class="uc-chip" data-v="10" aria-pressed="true">Mittel · 10</button>
+            <button type="button" class="uc-chip" data-v="50" aria-pressed="false">Hoch · 50</button>
+            <button type="button" class="uc-chip" data-v="150" aria-pressed="false">Spitze · 150</button>
+          </div>
+          <span class="uc-hint">Gemeint ist die Rate, die du beim späteren Zusammenführen erwartest – nicht unbedingt die heutige. Die Vorschläge sind frei überschreibbar.</span>
+          <div class="uc-err" id="uc-err-feeRate" hidden></div>
+        </div>
+        <div class="uc-field">
+          <span class="uc-lbl" id="uc-l-type">Adresstyp deiner UTXOs</span>
+          <div class="uc-seg" role="group" aria-labelledby="uc-l-type" id="uc-type">
+            <button type="button" data-v="p2wpkh" aria-pressed="true">Native SegWit<small>bc1q…</small></button>
+            <button type="button" data-v="p2tr" aria-pressed="false">Taproot<small>bc1p…</small></button>
+            <button type="button" data-v="p2pkh" aria-pressed="false">Legacy<small>1…</small></button>
+          </div>
+          <span class="uc-hint">Der Typ bestimmt die Größe jedes Inputs. Die meisten modernen Wallets nutzen Native SegWit.</span>
+        </div>
+        <div class="uc-field">
+          <label for="uc-price">Aktueller Kurs (optional)</label>
+          <div class="uc-ix"><input class="uc-input" id="uc-price" type="text" inputmode="decimal" autocomplete="off" value="60000"><span class="uc-unit">€/BTC</span></div>
+          <div class="uc-row">
+            <button type="button" class="uc-btn" id="uc-live">Live-Kurs laden</button>
+            <span class="uc-mu" id="uc-live-msg" role="status" aria-live="polite"></span>
+          </div>
+          <span class="uc-hint">Für Euro-Werte und Marktwert. Voreingestellter Beispielwert. Der Live-Kurs sendet erst beim Klick eine Anfrage an mempool.space; sonst verlässt nichts dein Gerät. Bleibt das Feld leer, wird der Kaufkurs verwendet.</span>
+          <div class="uc-err" id="uc-err-price" hidden></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Erweitert -->
+    <div class="uc-sec">
+      <details id="uc-adv">
+        <summary>Erweiterte Einstellungen</summary>
+        <div class="uc-body">
+          <div class="uc-grid">
+            <div class="uc-field">
+              <label for="uc-outtype">Ziel-Adresstyp der Zusammenführung</label>
+              <select class="uc-input" id="uc-outtype">
+                <option value="same" selected>Wie die UTXOs</option>
+                <option value="p2wpkh">Native SegWit (P2WPKH)</option>
+                <option value="p2tr">Taproot (P2TR)</option>
+                <option value="p2pkh">Legacy (P2PKH)</option>
+              </select>
+            </div>
+            <div class="uc-field">
+              <label for="uc-nout">Anzahl Outputs</label>
+              <input class="uc-input" id="uc-nout" type="text" inputmode="numeric" autocomplete="off" value="1">
+              <span class="uc-hint">Normalerweise 1 (alles in einen UTXO). Jeder weitere Output vergrößert die Transaktion.</span>
+              <div class="uc-err" id="uc-err-nOut" hidden></div>
+            </div>
+            <div class="uc-field" id="uc-buyfee-field">
+              <label for="uc-buyfee">Gebühr beim Kauf</label>
+              <div class="uc-ix"><input class="uc-input" id="uc-buyfee" type="text" inputmode="decimal" autocomplete="off" value="0"><span class="uc-unit">%</span></div>
+              <span class="uc-hint">Börsengebühr, die vom Kaufbetrag abgezogen wird (0 = ignorieren).</span>
+              <div class="uc-err" id="uc-err-buyFee" hidden></div>
+            </div>
+          </div>
+          <h3 class="uc-h3">Gebühren-Szenarien zum Vergleich</h3>
+          <div class="uc-grid" style="grid-template-columns:repeat(auto-fit,minmax(130px,1fr))">
+            <div class="uc-field"><label for="uc-s0">Niedrig</label><div class="uc-ix"><input class="uc-input" id="uc-s0" type="text" inputmode="decimal" autocomplete="off" value="2"><span class="uc-unit">sat/vB</span></div><div class="uc-err" id="uc-err-scen0" hidden></div></div>
+            <div class="uc-field"><label for="uc-s1">Mittel</label><div class="uc-ix"><input class="uc-input" id="uc-s1" type="text" inputmode="decimal" autocomplete="off" value="10"><span class="uc-unit">sat/vB</span></div><div class="uc-err" id="uc-err-scen1" hidden></div></div>
+            <div class="uc-field"><label for="uc-s2">Hoch</label><div class="uc-ix"><input class="uc-input" id="uc-s2" type="text" inputmode="decimal" autocomplete="off" value="50"><span class="uc-unit">sat/vB</span></div><div class="uc-err" id="uc-err-scen2" hidden></div></div>
+            <div class="uc-field"><label for="uc-s3">Spitze</label><div class="uc-ix"><input class="uc-input" id="uc-s3" type="text" inputmode="decimal" autocomplete="off" value="150"><span class="uc-unit">sat/vB</span></div><div class="uc-err" id="uc-err-scen3" hidden></div></div>
+          </div>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ===================== Ergebnisse ===================== -->
+  <section aria-labelledby="uc-t-res" aria-live="polite">
+    <h2 id="uc-t-res" class="uc-card-title" style="margin:8px 0 12px">Ergebnis bei <span id="uc-res-rate"></span></h2>
+    <div id="uc-results"></div>
+  </section>
+
+  <section class="uc-card" id="uc-scen-card" aria-labelledby="uc-t-scen">
+    <h2 id="uc-t-scen">Szenarien im Vergleich</h2>
+    <p class="uc-card-sub">Gleicher Bestand, unterschiedliche Gebührenraten. Die Raten lassen sich unter „Erweiterte Einstellungen“ ändern.</p>
+    <div class="uc-chart" id="uc-chart"></div>
+    <div id="uc-scen-table"></div>
+    <p class="uc-foot" id="uc-scen-note"></p>
+  </section>
+
+  <section class="uc-card" id="uc-dust-card" aria-labelledby="uc-t-dust">
+    <h2 id="uc-t-dust">Dust und unwirtschaftliche UTXOs</h2>
+    <p class="uc-card-sub">Ab welchem Wert lohnt sich die Ausgabe eines UTXOs bei der eingestellten Gebühr?</p>
+    <div id="uc-dust-body"></div>
+    <h3 class="uc-h3">Zwei verschiedene Dust-Begriffe</h3>
+    <p><strong>Wirtschaftlicher Schwellenwert (dieser Rechner):</strong> Ein UTXO ist bei einer Gebührenrate nicht mehr wirtschaftlich, wenn die Gebühr für seinen Input (Input-Größe in vB × Rate) mindestens so hoch ist wie sein Wert. Der Schwellenwert hängt von der Gebührenrate ab und ist nur eine Momentaufnahme.</p>
+    <p><strong>Dust-Relay-Limit von Bitcoin Core:</strong> Eine feste Policy-Regel für <em>neue Outputs</em>. Knoten leiten Transaktionen mit Outputs unterhalb dieses Limits (bei 3 sat/vB: 546 / 294 / 330 sat je nach Typ) standardmäßig nicht weiter. Sie hängt nicht von der aktuellen Netzwerkgebühr ab.</p>
+    <p>Ein UTXO unter dem wirtschaftlichen Schwellenwert ist <strong>nicht verloren</strong> und bleibt gültig und ausgebbar. Sinken die Gebühren oder wird er zusammen mit größeren UTXOs ausgegeben, kann sich die Ausgabe wieder lohnen.</p>
+  </section>
+
+  <!-- ===================== Methodik ===================== -->
+  <section class="uc-card" aria-labelledby="uc-t-meth">
+    <details id="uc-meth">
+      <summary id="uc-t-meth">Berechnung und Methodik</summary>
+      <div class="uc-body">
+        <p>Eine Konsolidierung ist selbst eine normale On-Chain-Transaktion: Sie spendet alle ausgewählten UTXOs als Inputs und erzeugt einen (oder wenige) neue Outputs. Dafür fallen Netzwerkgebühren an, die du an Miner zahlst. Sie sind unabhängig vom Betrag und wachsen mit der Datengröße der Transaktion, also vor allem mit der Anzahl der Inputs.</p>
+
+        <h3 class="uc-h3">1. Protokollannahmen (feste Größen)</h3>
+        <p>Größen in Weight Units (WU); 1 vB = 4 WU. Witness-Daten zählen 1 WU je Byte, alle anderen Bytes 4 WU. Gerechnet wird mit Single-Sig, komprimierten Public Keys und dem Standard-Spend (bei Taproot Key-Path).</p>
+        <table class="uc-table" aria-label="Größen je Adresstyp">
+          <thead><tr><th>Typ</th><th>Input</th><th>Output</th></tr></thead>
+          <tbody>
+            <tr><td data-label="Typ">Native SegWit (P2WPKH)</td><td data-label="Input">272 WU = 68 vB</td><td data-label="Output">124 WU = 31 vB</td></tr>
+            <tr><td data-label="Typ">Taproot (P2TR)</td><td data-label="Input">230 WU = 57,5 vB</td><td data-label="Output">172 WU = 43 vB</td></tr>
+            <tr><td data-label="Typ">Legacy (P2PKH)</td><td data-label="Input">592 WU = 148 vB</td><td data-label="Output">136 WU = 34 vB</td></tr>
+          </tbody>
+        </table>
+        <p class="uc-mu" style="margin-top:8px">Overhead: Version (4 B), Locktime (4 B), je ein Zähler für Inputs und Outputs (1 B, ab 253 Inputs 3 B), bei SegWit/Taproot zusätzlich Marker und Flag (2 WU). Eine Transaktion mit einem Input und einem Output kommt so auf 109,5 vB (P2WPKH), 111 vB (P2TR) bzw. 192 vB (P2PKH).</p>
+<pre class="uc-pre">Gewicht = Overhead + Inputs × Input-WU + Outputs × Output-WU
+vSize   = Gewicht / 4, aufgerundet auf ganze vB
+Gebühr  = vSize × Rate (sat/vB), aufgerundet auf ganze sat</pre>
+        <p>Transaktionen über 400.000 WU (100.000 vB) gelten nach Standard-Policy als zu groß. In diesem Fall teilt der Rechner die Konsolidierung auf mehrere Transaktionen auf, jede mit eigenen Outputs.</p>
+
+        <h3 class="uc-h3">2. Rechenweg mit deinen aktuellen Eingaben</h3>
+        <div id="uc-calcpath"></div>
+
+        <h3 class="uc-h3">3. Schätzwerte</h3>
+        <ul class="uc-list">
+          <li><strong>Anzahl der Käufe:</strong> Wöchentlich = Jahre × 365,25 / 7, alle 2 Wochen = Jahre × 365,25 / 14, monatlich = Jahre × 12, jeweils abgerundet. Jeder Kauf ergibt einen UTXO.</li>
+          <li><strong>Sats pro Kauf:</strong> Betrag × (1 − Kaufgebühr) / Kurs × 100.000.000, abgerundet. Es wird ein gleichbleibender Kurs angenommen; reale Käufe zu schwankenden Kursen ergeben unterschiedlich große UTXOs.</li>
+          <li><strong>Euro-Werte</strong> beruhen auf dem eingegebenen Kurs. Investiertes Kapital, Bestand in BTC und Marktwert sind drei verschiedene Größen: Der Bestand folgt aus dem Kaufkurs, der Marktwert aus dem aktuellen Kurs.</li>
+          <li><strong>Gebührenrate:</strong> wird als konstant angenommen. Die tatsächliche Gebühr hängt von der realen Transaktionsstruktur, der Wallet (Signaturgrößen, Change-Output, Coin Selection) und der Rate zum Sendezeitpunkt ab. Rechne mit Abweichungen von einigen Prozent.</li>
+        </ul>
+
+        <h3 class="uc-h3">4. Wirtschaftliche Einordnung</h3>
+        <ul class="uc-list">
+          <li><strong>Dust-Schwelle</strong> = Input-vB × Rate, aufgerundet. Beispiel P2WPKH bei 10 sat/vB: 68 × 10 = 680 sat. Zusätzlich zeigt der Rechner die Kosten einer Einzelausgabe (1 Input, 1 Output, inklusive Overhead).</li>
+          <li><strong>Gebührenanteil</strong> = Konsolidierungsgebühr / Bestand. Die Stufen „gering“ (unter 1 %), „moderat“ (1–5 %), „hoch“ (5–20 %) und „sehr hoch“ (ab 20 %) sind eine grobe Orientierung, keine Empfehlung.</li>
+          <li>Ob und wann eine Konsolidierung sinnvoll ist, hängt von deiner Situation ab: Bestand, erwartete Gebühren, Zeithorizont und Datenschutz (das Zusammenführen verknüpft die Herkunft der UTXOs). Eine pauschale Regel gibt es nicht.</li>
+        </ul>
+        <p class="uc-mu">Alle Angaben sind Schätzungen zu Bildungszwecken und keine Anlageberatung.</p>
+      </div>
+    </details>
+  </section>
+    </div>
+  </main>
+</div>
+
+<footer>
+  <div class="wrap">
+    <span>© <span id="y"></span> bitcoinsats.io · Keine Anlageberatung</span>
+    <span><a href="/impressum.html">Impressum</a><a href="/datenschutz.html">Datenschutz</a></span>
+  </div>
+</footer>
+
+<script src="/js/site.js"></script>
+<script src="/js/utxo-core.js"></script>
+<script src="/js/utxo-calculator.js"></script>
+<script>document.getElementById('y').textContent=new Date().getFullYear();</script>
+</body>
+</html>
