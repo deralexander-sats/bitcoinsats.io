@@ -1,0 +1,9 @@
+# Alle Tools der Seite. Ein neuer Eintrag erscheint automatisch
+# im Menü (alle Seiten) und als Kachel auf der Startseite.
+# soon: true  = Kachel "Geplant" auf der Startseite, noch nicht im Menü.
+- title: "Bitcoin-Balance-Monitor"
+  url: /watchonly/
+  text: "Bitcoin-Adresse überwachen: Guthaben, Ein- und Ausgänge, Transaktionsverlauf und aktueller Gegenwert in Euro."
+- title: "UTXO-Rechner"
+  url: /tools/utxo-rechner/
+  text: "UTXOs durch regelmäßige Käufe, Konsolidierungsgebühren und Dust-Schwellenwerte berechnen."

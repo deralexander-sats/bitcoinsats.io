@@ -1,46 +1,13 @@
-
-<!DOCTYPE html>
-<html lang="de" data-theme="light">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>UTXO-Rechner | bitcoinsats.io</title>
-<meta name="description" content="UTXO-Rechner: Wie viele UTXOs entstehen durch regelmäßige Bitcoin-Käufe, was kostet die Konsolidierung und ab wann wird ein UTXO unwirtschaftlich? Lokal im Browser, ohne Anmeldung.">
-<meta name="referrer" content="no-referrer">
-<script>try{document.documentElement.dataset.theme=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light')}catch(e){}</script>
-<link rel="canonical" href="https://bitcoinsats.io/utxo-rechner/">
-<meta property="og:type" content="website">
-<meta property="og:title" content="UTXO-Rechner | bitcoinsats.io">
-<meta property="og:description" content="UTXOs durch regelmäßige Käufe, Konsolidierungsgebühren und Dust-Schwellenwerte berechnen. Lokal im Browser, ohne Anmeldung.">
-<meta property="og:url" content="https://bitcoinsats.io/utxo-rechner/">
-<link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/css/style.css">
-<link rel="stylesheet" href="/css/utxo-calculator.css">
-</head>
-<body>
-<header class="bar">
-  <div class="bar-in">
-    <a class="logo" href="/" aria-label="bitcoinsats.io Startseite">
-      <img class="logo-light" src="/images/logo.svg" alt="" width="120" height="34">
-      <img class="logo-dark" src="/images/logo-dark.svg" alt="" width="120" height="34">
-
-    </a>
-    <div class="bar-actions">
-      <button class="ic" id="theme" type="button" aria-label="Darstellung wechseln">☾</button>
-      <button class="menu-btn" id="menubtn" type="button" aria-expanded="false" aria-controls="menu">
-        <span class="burger" aria-hidden="true"></span><span class="menu-label">Menü</span>
-      </button>
-    </div>
-  </div>
-  <nav class="menu" id="menu" aria-label="Hauptmenü" hidden>
-    <a href="/">Startseite</a>
-    <a href="/watchonly/">Bitcoin-Balance-Monitor</a>
-    <a href="/utxo-rechner/">UTXO-Rechner</a>
-    <a href="/impressum.html">Impressum</a>
-    <a href="/datenschutz.html">Datenschutz</a>
-  </nav>
-</header>
-<div class="wrap">
+---
+layout: default
+title: "UTXO-Rechner | bitcoinsats.io"
+description: "UTXO-Rechner: Wie viele UTXOs entstehen durch regelmäßige Bitcoin-Käufe, was kostet die Konsolidierung und ab wann wird ein UTXO unwirtschaftlich? Lokal im Browser, ohne Anmeldung."
+og_description: "UTXOs durch regelmäßige Käufe, Konsolidierungsgebühren und Dust-Schwellenwerte berechnen. Lokal im Browser, ohne Anmeldung."
+canonical: "/tools/utxo-rechner/"
+referrer: "no-referrer"
+head_styles:
+  - "/css/utxo-calculator.css"
+---
   <main>
     <h1>UTXO-<em>Rechner</em></h1>
     <p class="lead">Wie viele UTXOs entstehen durch regelmäßige Bitcoin-Käufe, was kostet es, sie später zusammenzuführen, und ab welcher Gebühr lohnt sich die Ausgabe kleiner UTXOs nicht mehr? Alle Berechnungen laufen lokal in deinem Browser.</p>
@@ -263,18 +230,6 @@ Gebühr  = vSize × Rate (sat/vB), aufgerundet auf ganze sat</pre>
   </section>
     </div>
   </main>
-</div>
 
-<footer>
-  <div class="wrap">
-    <span>© <span id="y"></span> bitcoinsats.io · Keine Anlageberatung</span>
-    <span><a href="/impressum.html">Impressum</a><a href="/datenschutz.html">Datenschutz</a></span>
-  </div>
-</footer>
-
-<script src="/js/site.js"></script>
 <script src="/js/utxo-core.js"></script>
 <script src="/js/utxo-calculator.js"></script>
-<script>document.getElementById('y').textContent=new Date().getFullYear();</script>
-</body>
-</html>

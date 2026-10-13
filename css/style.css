@@ -701,3 +701,15 @@ body > .wrap > footer{
     font-size:.9rem;
   }
 }
+
+
+/* Sehr schmale Smartphones (bis 360px): Logo etwas kleiner, damit die Kopfzeile nicht überläuft */
+@media (max-width:360px){
+  .bar-in{
+    gap:8px;
+  }
+
+  .logo{
+    font-size:1.15rem;
+  }
+}

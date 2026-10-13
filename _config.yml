@@ -1,0 +1,7 @@
+# Konfiguration für GitHub Pages (Jekyll). Es werden keine Plugins benötigt.
+title: bitcoinsats.io
+lang: de
+# Diese Dateien gehören ins Repository, aber nicht auf die öffentliche Seite:
+exclude:
+  - README.md
+  - tests

@@ -1,42 +1,11 @@
-<!DOCTYPE html>
-<html lang="de" data-theme="light">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>bitcoinsats.io | Bitcoin - ein nahezu perfektes Geld</title>
-<meta name="description" content="Sachliche Informationen und praktische Werkzeuge rund um Bitcoin. Bitcoin studieren. Wert speichern. Die richtigen Werkzeuge nutzen. Bitcoin und Sats erfahren.">
-<script>try{document.documentElement.dataset.theme=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light')}catch(e){}</script>
-<link rel="canonical" href="https://bitcoinsats.io/">
-<meta property="og:type" content="website">
-<meta property="og:title" content="bitcoinsats.io | Informationen und Tools rund um Bitcoin">
-<meta property="og:description" content="Bitcoin studieren. Wert speichern. Die richtigen Werkzeuge nutzen. Bitcoin und Sats erfahren.">
-<meta property="og:url" content="https://bitcoinsats.io/">
-<link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/css/style.css">
-</head>
-<body>
-<header class="bar">
-  <div class="bar-in">
-    <a class="logo" href="/" aria-label="bitcoinsats.io Startseite">
-      <img class="logo-light" src="/images/logo.svg" alt="" width="120" height="34">
-      <img class="logo-dark" src="/images/logo-dark.svg" alt="" width="120" height="34">
-
-    </a>
-    <div class="bar-actions">
-      <button class="ic" id="theme" type="button" aria-label="Darstellung wechseln">☾</button>
-      <button class="menu-btn" id="menubtn" type="button" aria-expanded="false" aria-controls="menu">
-        <span class="burger" aria-hidden="true"></span><span class="menu-label">Menü</span>
-      </button>
-    </div>
-  </div>
-  <nav class="menu" id="menu" aria-label="Hauptmenü" hidden>
-    <a href="/">Startseite</a>
-    <a href="/watchonly/">Bitcoin-Balance-Monitor</a>
-    <a href="/impressum.html">Impressum</a>
-    <a href="/datenschutz.html">Datenschutz</a>
-  </nav>
-</header>
-<div class="wrap">
+---
+layout: default
+title: "bitcoinsats.io | Bitcoin - ein nahezu perfektes Geld"
+description: "Sachliche Informationen und praktische Werkzeuge rund um Bitcoin. Bitcoin studieren. Wert speichern. Die richtigen Werkzeuge nutzen. Bitcoin und Sats erfahren."
+canonical: "/"
+og_title: "bitcoinsats.io | Informationen und Tools rund um Bitcoin"
+og_description: "Bitcoin studieren. Wert speichern. Die richtigen Werkzeuge nutzen. Bitcoin und Sats erfahren."
+---
   <main>
     <p class="hero-statement">Bitcoin ist ein erlaubnisfreies Zahlungsnetzwerk und ein nahezu perfektes Geld.</p>
        <p class="hero-statement-sats">Ein Sat ist die kleinste Einheit von Bitcoin. Der Begriff steht für Satoshi und ist nach dem Bitcoin-Erfinder Satoshi Nakamoto benannt.
@@ -46,12 +15,17 @@
 
     <h2>Tools</h2>
     <div class="grid">
-      <a class="card" href="/watchonly/">
+{% for tool in site.data.tools %}{% if tool.soon %}      <div class="card soon">
+        <span class="badge">Geplant</span>
+        <h3>{{ tool.title }}</h3>
+        <p>{{ tool.text }}</p>
+      </div>
+{% else %}      <a class="card" href="{{ tool.url }}">
         <span class="badge">Verfügbar</span>
-        <h3>Bitcoin-Balance-Monitor</h3>
-        <p>Bitcoin-Adresse überwachen: Guthaben, Ein- und Ausgänge, Transaktionsverlauf und aktueller Gegenwert in Euro.</p>
+        <h3>{{ tool.title }}</h3>
+        <p>{{ tool.text }}</p>
       </a>
-    <!--  <div class="card soon">
+{% endif %}{% endfor %}    <!--  <div class="card soon">
         <span class="badge">Geplant</span>
         <h3>Kredit-Vergleich</h3>
         <p>Bitcoin-besicherte Kredite verschiedener Anbieter im Überblick.</p>
@@ -77,27 +51,6 @@
 
     
   </main>
-  
-</div>
-
-<footer>
-  <div class="wrap">
-    <span>© <span id="y"></span> bitcoinsats.io · Keine Anlageberatung</span>
-    <span><a href="/impressum.html">Impressum</a><a href="/datenschutz.html">Datenschutz</a></span>
-  </div>
-</footer>
-
-<script src="/js/site.js"></script>
-<script>
-const $=id=>document.getElementById(id);
-
-
-
-
-  
-$('y').textContent=new Date().getFullYear();
-</script>
-
 
 <script>
 (() => {
@@ -136,8 +89,3 @@ $('y').textContent=new Date().getFullYear();
   sendTheme();
 })();
 </script>
-
-
-  
-</body>
-</html>

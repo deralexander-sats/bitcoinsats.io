@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ page.title | escape }}</title>
+<meta name="description" content="{{ page.description | escape }}">
+{% if page.referrer %}<meta name="referrer" content="{{ page.referrer }}">
+{% endif %}<script>try{document.documentElement.dataset.theme=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light')}catch(e){}</script>
+<link rel="canonical" href="https://bitcoinsats.io{{ page.canonical }}">
+<meta property="og:type" content="website">
+<meta property="og:title" content="{{ page.og_title | default: page.title | escape }}">
+<meta property="og:description" content="{{ page.og_description | default: page.description | escape }}">
+<meta property="og:url" content="https://bitcoinsats.io{{ page.canonical }}">
+<link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/css/style.css">
+{% for style in page.head_styles %}<link rel="stylesheet" href="{{ style }}">
+{% endfor %}{% for script in page.head_scripts %}<script src="{{ script }}"></script>
+{% endfor %}</head>
+<body>
+{% include header.html %}
+<div class="wrap">
+{{ content }}
+</div>
+
+{% include footer.html %}
+
+<script src="/js/site.js"></script>
+<script>document.getElementById('y').textContent=new Date().getFullYear();</script>
+</body>
+</html>

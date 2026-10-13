@@ -1,44 +1,13 @@
-<!DOCTYPE html>
-<html lang="de" data-theme="light">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Bitcoin-Balance-Monitor | bitcoinsats.io</title>
-<meta name="description" content="Bitcoin-Adresse beobachten: Bestand, Ein- und Ausgänge, Verlauf. Nur lesend, ohne Anmeldung.">
-<meta name="referrer" content="no-referrer">
-<script>try{document.documentElement.dataset.theme=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light')}catch(e){}</script>
-<link rel="canonical" href="https://bitcoinsats.io/watchonly/">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Bitcoin-Balance-Monitor | bitcoinsats.io">
-<meta property="og:description" content="Bitcoin-Adresse beobachten: Bestand, Ein- und Ausgänge, Verlauf. Nur lesend, ohne Anmeldung.">
-<meta property="og:url" content="https://bitcoinsats.io/watchonly/">
-<link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/css/style.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
-</head>
-<body>
-<header class="bar">
-  <div class="bar-in">
-    <a class="logo" href="/" aria-label="bitcoinsats.io Startseite">
-      <img class="logo-light" src="/images/logo.svg" alt="" width="120" height="34">
-      <img class="logo-dark" src="/images/logo-dark.svg" alt="" width="120" height="34">
-
-    </a>
-    <div class="bar-actions">
-      <button class="ic" id="theme" type="button" aria-label="Darstellung wechseln">☾</button>
-      <button class="menu-btn" id="menubtn" type="button" aria-expanded="false" aria-controls="menu">
-        <span class="burger" aria-hidden="true"></span><span class="menu-label">Menü</span>
-      </button>
-    </div>
-  </div>
-  <nav class="menu" id="menu" aria-label="Hauptmenü" hidden>
-    <a href="/">Startseite</a>
-    <a href="/watchonly/">Bitcoin-Balance-Monitor</a>
-    <a href="/impressum.html">Impressum</a>
-    <a href="/datenschutz.html">Datenschutz</a>
-  </nav>
-</header>
-<div class="wrap">
+---
+layout: default
+title: "Bitcoin-Balance-Monitor | bitcoinsats.io"
+description: "Bitcoin-Adresse beobachten: Bestand, Ein- und Ausgänge, Verlauf. Nur lesend, ohne Anmeldung."
+canonical: "/watchonly/"
+referrer: "no-referrer"
+head_scripts:
+  - "https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"
+---
+  <main>
   <h1>Bitcoin-Balance-<em>Monitor</em></h1>
   <p class="lead">Öffentliche Bitcoin-Adresse eingeben und Bestand, Ein- und Ausgänge sowie den Verlauf beobachten. Nur lesend, ohne Anmeldung und ohne private Schlüssel.</p>
 
@@ -77,10 +46,9 @@
       <div class="qr"><div id="qrimg"></div><div><div class="mu">QR-Code scannen oder Link weitergeben:</div><div class="l" id="qrlink"></div></div></div>
     </div>
   </div>
-  <footer>Daten von mempool.space · Keine Anlageberatung · bitcoinsats.io · <span><a href="/impressum.html">Impressum</a><a href="/datenschutz.html">Datenschutz</a></span></footer>
-</div>
+    <p class="mu" style="text-align:center;margin-top:28px">Daten von mempool.space</p>
+  </main>
 
-<script src="/js/site.js"></script>
 <script>
 const API='https://mempool.space/api',BASE='https://bitcoinsats.io/watchonly/';
 const $=id=>document.getElementById(id);
@@ -178,6 +146,3 @@ const a0=fromUrl();if(a0){$('addr').value=a0;load(a0,true)}
 
   
 </script>
-</body>
-</html>
-

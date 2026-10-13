@@ -1,37 +1,9 @@
-<!DOCTYPE html>
-<html lang="de" data-theme="light">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Impressum | bitcoinsats.io</title>
-<meta name="description" content="Impressum von bitcoinsats.io">
-<script>try{document.documentElement.dataset.theme=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light')}catch(e){}</script>
-<link rel="canonical" href="https://bitcoinsats.io/impressum.html">
-<link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/css/style.css">
-</head>
-<body>
-<header class="bar">
-  <div class="bar-in">
-    <a class="logo" href="/" aria-label="bitcoinsats.io Startseite">
-      <img class="logo-light" src="/images/logo.svg" alt="" width="120" height="34">
-      <img class="logo-dark" src="/images/logo-dark.svg" alt="" width="120" height="34">
-    </a>
-    <div class="bar-actions">
-      <button class="ic" id="theme" type="button" aria-label="Darstellung wechseln">☾</button>
-      <button class="menu-btn" id="menubtn" type="button" aria-expanded="false" aria-controls="menu">
-        <span class="burger" aria-hidden="true"></span><span class="menu-label">Menü</span>
-      </button>
-    </div>
-  </div>
-  <nav class="menu" id="menu" aria-label="Hauptmenü" hidden>
-    <a href="/">Startseite</a>
-    <a href="/watchonly/">Bitcoin-Balance-Monitor</a>
-    <a href="/impressum.html">Impressum</a>
-    <a href="/datenschutz.html">Datenschutz</a>
-  </nav>
-</header>
-<div class="wrap">
+---
+layout: default
+title: "Impressum | bitcoinsats.io"
+description: "Impressum von bitcoinsats.io"
+canonical: "/impressum.html"
+---
   <main class="legal">
     <h1>Impressum</h1>
     <p class="mu">Angaben gemäß § 5 DDG</p>
@@ -47,16 +19,3 @@
     <h2>Haftung für Links</h2>
     <p>Diese Seite verlinkt auf externe Seiten (zum Beispiel mempool.space). Auf deren Inhalte haben wir keinen Einfluss. Verantwortlich ist stets der jeweilige Anbieter.</p>
   </main>
-</div>
-
-<footer>
-  <div class="wrap">
-    <span>© <span id="y"></span> bitcoinsats.io · Keine Anlageberatung</span>
-    <span><a href="/impressum.html">Impressum</a><a href="/datenschutz.html">Datenschutz</a></span>
-  </div>
-</footer>
-
-<script src="/js/site.js"></script>
-<script>document.getElementById('y').textContent=new Date().getFullYear();</script>
-</body>
-</html>
