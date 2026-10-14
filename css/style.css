@@ -124,14 +124,23 @@ main{
 
 .logo img,
 .logo svg{
-  height:1.25em;
+  height:1.05em;
   width:auto;
   display:block;
 }
 
+
 .logo .logo-dark{ display:none; }
 [data-theme=dark] .logo .logo-light{ display:none; }
 [data-theme=dark] .logo .logo-dark{ display:block; }
+
+.logo img.logo-bitcoin,
+.logo svg.logo-bitcoin{
+  height:1.05em;
+  width:auto;
+  display:block;
+}
+
 
 .logo i{
   font-style:normal;
@@ -716,81 +725,3 @@ body > .wrap > footer{
 
 
 
-/* ==========================================================================
-   REFACTORING: PREMIUM-NIVEAU
-   ================================================================          */
-
-:root {
-  --bg-light: #F9FAFB;
-  --bg-dark: #0B0F19;
-  --text-light: #0B0F19;
-  --text-dark: #F3F4F6;
-  --taupe-primary: #1E2230;
-  --earth-hairline: #9CA3AF;
-}
-
-/* Navbar & Brand Layout */
-.site-header {
-  border-bottom: 1px solid var(--earth-hairline);
-  background-color: var(--bg-light);
-}
-
-@media (prefers-color-scheme: dark) {
-  .site-header {
-    background-color: var(--bg-dark);
-  }
-}
-
-.brand-logo {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  text-decoration: none;
-}
-
-.brand-text {
-  height: 1.15rem;
-  width: auto;
-  color: var(--text-light);
-}
-
-@media (prefers-color-scheme: dark) {
-  .brand-text {
-    color: var(--text-dark);
-  }
-}
-
-/* Modul-, Tabellen- und Karten-Header (Zentrale Vorgabe) */
-.module-header,
-.card-header,
-.table-header,
-.section-header {
-  background: transparent !important;
-  background-color: transparent !important;
-  border-bottom: 1px solid var(--earth-hairline) !important;
-  padding-bottom: 0.85rem;
-  margin-bottom: 1.25rem;
-  box-shadow: none !important;
-}
-
-/* Dezente All-Caps-Typografie mit erhöhtem Letter-Spacing */
-.module-header h2,
-.card-header h3,
-.table-header th,
-.section-title {
-  font-family: inherit;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-size: 0.85rem;
-  color: var(--taupe-primary);
-}
-
-@media (prefers-color-scheme: dark) {
-  .module-header h2,
-  .card-header h3,
-  .table-header th,
-  .section-title {
-    color: var(--text-dark);
-  }
-}
