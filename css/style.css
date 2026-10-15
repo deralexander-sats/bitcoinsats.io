@@ -146,11 +146,10 @@ main{
   display:block;
 }
 
-/* Das Symbol bleibt im Dunkelmodus #1E2230; ein feiner Rand hält es vom Hintergrund getrennt. */
-[data-theme=dark] .logo-mark path:first-child{
-  stroke:#3B4356;
-  stroke-width:1.2;
-}
+/* Zwei getrennte Symbol-Dateien: hell (images/logo-symbol.svg) und dunkel mit feinem Rand (images/logo-symbol-dark.svg) */
+.logo-mark-dark{ display:none; }
+[data-theme=dark] .logo-mark-light{ display:none; }
+[data-theme=dark] .logo-mark-dark{ display:block; }
 
 .bar-actions{
   display:flex;
