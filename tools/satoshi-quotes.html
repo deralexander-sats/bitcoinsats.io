@@ -15,11 +15,11 @@
                 extend: {
                     colors: {
                         btc: {
-                            orange: '#f7931a',
-                            gold: '#f2a900',
-                            darkBg: '#0f1117',
-                            cardBg: '#181b24',
-                            border: '#2a2e3d'
+                            orange: 'rgb(var(--q-ac) / <alpha-value>)',
+                            gold: 'rgb(var(--q-ac) / <alpha-value>)',
+                            darkBg: '#0B0F19',
+                            cardBg: '#111623',
+                            border: '#212839'
                         }
                     },
                     animation: {
@@ -49,15 +49,17 @@
             height: 6px;
         }
         ::-webkit-scrollbar-track {
-            background: #0f1117;
+            background: #0B0F19;
         }
         ::-webkit-scrollbar-thumb {
-            background: #2a2e3d;
+            background: #212839;
             border-radius: 3px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: #f7931a;
+            background: #9CA3AF;
         }
+        :root { --q-ac: 243 244 246; --q-on: #0B0F19; }
+        html[data-theme="light"] { --q-ac: 30 34 48; --q-on: #F3F4F6; }
         .quote-slide {
             transition: opacity 0.35s ease, transform 0.35s ease;
         }
@@ -88,8 +90,8 @@ body > main {
     margin: 0;
     box-sizing: border-box;
 
-    border: 1px solid #2a2e3d;
-    border-radius: 18px;
+    border: 1px solid #212839;
+    border-radius: 8px;
 
     overflow: hidden;
 }
@@ -97,17 +99,17 @@ body > main {
 /* Light-Modus der Hauptseite übernehmen */
 html[data-theme="light"] body {
     background: transparent !important;
-    color: #14181F !important;
+    color: #0B0F19 !important;
 }
 
 html[data-theme="light"] body > main {
     background: #FFFFFF !important;
-    border-color: #ECE6DB !important;
+    border-color: #E2E4E9 !important;
 }
 
 html[data-theme="light"] .bg-btc-darkBg,
 html[data-theme="light"] .bg-btc-darkBg\/60 {
-    background-color: #FBF8F3 !important;
+    background-color: #F4F4F2 !important;
 }
 
 html[data-theme="light"] .bg-btc-cardBg {
@@ -115,13 +117,13 @@ html[data-theme="light"] .bg-btc-cardBg {
 }
 
 html[data-theme="light"] [class*="border-btc-border"] {
-    border-color: #ECE6DB !important;
+    border-color: #E2E4E9 !important;
 }
 
 html[data-theme="light"] .text-white,
 html[data-theme="light"] .text-gray-100,
 html[data-theme="light"] .text-gray-200 {
-    color: #14181F !important;
+    color: #0B0F19 !important;
 }
 
 html[data-theme="light"] .text-gray-300 {
@@ -131,24 +133,24 @@ html[data-theme="light"] .text-gray-300 {
 html[data-theme="light"] .text-gray-400,
 html[data-theme="light"] .text-gray-500,
 html[data-theme="light"] .text-gray-600 {
-    color: #6B7280 !important;
+    color: #5B6272 !important;
 }
 
 html[data-theme="light"] input,
 html[data-theme="light"] select {
-    color: #14181F !important;
+    color: #0B0F19 !important;
 }
 
 html[data-theme="light"] input::placeholder {
-    color: #6B7280 !important;
+    color: #5B6272 !important;
 }
 
 html[data-theme="light"] ::-webkit-scrollbar-track {
-    background: #FBF8F3;
+    background: #F4F4F2;
 }
 
 html[data-theme="light"] ::-webkit-scrollbar-thumb {
-    background: #ECE6DB;
+    background: #E2E4E9;
 }
 
 
@@ -156,25 +158,23 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb {
 </head>
 <body class="bg-btc-darkBg text-gray-100 font-sans">
 
-   <!-- <main class="w-full max-w-3xl bg-btc-cardBg border border-btc-border rounded-2xl shadow-2xl overflow-hidden backdrop-blur-md relative">-->
+   <!-- <main class="w-full max-w-3xl bg-btc-cardBg border border-btc-border rounded-lg overflow-hidden relative">-->
 
-<main class="w-full max-w-none bg-btc-cardBg border border-btc-border rounded-2xl shadow-2xl overflow-hidden backdrop-blur-md relative">
+<main class="w-full max-w-none bg-btc-cardBg border border-btc-border rounded-lg overflow-hidden relative">
 
         
-        <!-- Top Glow Accent Header Line -->
-        <div class="h-1 w-full bg-gradient-to-r from-btc-gold via-btc-orange to-yellow-500"></div>
 
         <div class="p-6 sm:p-8">
             
             <header class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-btc-border/60">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-btc-orange/10 border border-btc-orange/30 flex items-center justify-center text-btc-orange">
+                    <div class="w-10 h-10 rounded-lg bg-btc-orange/10 border border-btc-orange/30 flex items-center justify-center text-btc-orange">
                         <i data-lucide="bitcoin" class="w-6 h-6"></i>
                     </div>
                     <div>
                         <h1 class="text-xl font-bold tracking-wide text-white flex items-center gap-2">
                             Satoshi Nakamoto
-                            <span class="text-xs font-medium px-2 py-0.5 rounded-full bg-btc-orange/20 text-btc-orange border border-btc-orange/30">Creator of Bitcoin</span>
+                            <span class="text-xs font-medium px-2 py-0.5 rounded bg-btc-orange/10 text-btc-orange border border-btc-orange/30">Creator of Bitcoin</span>
                         </h1>
                         <p class="text-xs text-gray-400">Timeless thoughts on money, trust & decentralization</p>
                     </div>
@@ -210,7 +210,7 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb {
                 <!-- Interactive Quote Text & Info Container -->
                 <div id="quoteCard" class="quote-slide relative z-10 space-y-4">
                     <div class="flex items-center justify-between">
-                        <span id="quoteCategory" class="text-[11px] font-semibold tracking-wider uppercase text-btc-gold bg-btc-gold/10 px-2.5 py-1 rounded-md border border-btc-gold/20">
+                        <span id="quoteCategory" class="text-[11px] font-semibold tracking-wider uppercase text-btc-gold bg-btc-gold/10 px-2.5 py-1 rounded border border-btc-gold/20">
                             Category
                         </span>
                         <span id="quoteDate" class="text-xs text-gray-400 font-mono flex items-center gap-1">
@@ -219,16 +219,16 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb {
                         </span>
                     </div>
 
-                    <blockquote id="quoteText" class="text-lg sm:text-xl font-medium leading-relaxed text-gray-100 pt-2 italic">
+                    <blockquote id="quoteText" class="text-lg sm:text-xl font-medium leading-relaxed text-gray-100 pt-2">
                         "Loading Satoshi's quote..."
                     </blockquote>
 
                     <!-- Deutsche Übersetzung -->
-                    <p id="quoteTextDe" class="text-sm text-gray-400 font-normal leading-relaxed pl-3 border-l-2 border-btc-orange/50 italic">
+                    <p id="quoteTextDe" class="text-sm text-gray-400 font-normal leading-relaxed pl-3 border-l border-btc-orange/50 italic">
                         "Lade Übersetzung..."
                     </p>
 
-                    <div class="text-xs text-gray-400 border-l-2 border-btc-orange/50 pl-3 py-0.5">
+                    <div class="text-xs text-gray-400 border-l border-btc-orange/50 pl-3 py-0.5">
                         <span id="quoteContext">Context snippet</span>
                     </div>
                 </div>
@@ -267,10 +267,10 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb {
 
                 <!-- Arrow Buttons -->
                 <div class="flex items-center gap-2">
-                    <button id="prevBtn" aria-label="Vorheriges Zitat" class="p-2.5 rounded-lg bg-btc-darkBg hover:bg-btc-orange hover:text-black text-gray-300 border border-btc-border transition-all active:scale-95">
+                    <button id="prevBtn" aria-label="Vorheriges Zitat" class="p-2.5 rounded-lg bg-btc-darkBg hover:bg-btc-orange hover:text-[color:var(--q-on)] text-gray-300 border border-btc-border transition-all active:scale-95">
                         <i data-lucide="chevron-left" class="w-4 h-4"></i>
                     </button>
-                    <button id="nextBtn" aria-label="Nächstes Zitat" class="p-2.5 rounded-lg bg-btc-darkBg hover:bg-btc-orange hover:text-black text-gray-300 border border-btc-border transition-all active:scale-95">
+                    <button id="nextBtn" aria-label="Nächstes Zitat" class="p-2.5 rounded-lg bg-btc-darkBg hover:bg-btc-orange hover:text-[color:var(--q-on)] text-gray-300 border border-btc-border transition-all active:scale-95">
                         <i data-lucide="chevron-right" class="w-4 h-4"></i>
                     </button>
                 </div>
@@ -280,7 +280,7 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb {
         </div>
 
         <!-- Toast Notification (Copied to Clipboard) -->
-        <div id="toast" class="absolute bottom-4 right-4 bg-btc-orange text-black font-semibold text-xs px-3 py-1.5 rounded-md shadow-lg transform translate-y-12 opacity-0 transition-all duration-300 flex items-center gap-1.5">
+        <div id="toast" class="absolute bottom-4 right-4 bg-btc-orange text-[color:var(--q-on)] font-medium text-xs px-3 py-1.5 rounded-md transform translate-y-12 opacity-0 transition-all duration-300 flex items-center gap-1.5">
             <i data-lucide="check-circle-2" class="w-4 h-4"></i>
             <span>In Zwischenablage kopiert!</span>
         </div>
@@ -425,7 +425,7 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb {
             filteredQuotes.forEach((_, idx) => {
                 const dot = document.createElement('button');
                 dot.ariaLabel = `Go to quote ${idx + 1}`;
-                dot.className = `h-2 rounded-full transition-all duration-300 ${
+                dot.className = `h-2 rounded-sm transition-all duration-300 ${
                     idx === currentIndex 
                         ? 'w-6 bg-btc-orange' 
                         : 'w-2 bg-btc-border hover:bg-gray-400'

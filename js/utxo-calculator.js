@@ -201,7 +201,7 @@
       var v = vals[i], h = Math.max(3, Math.min(ph, v / scaleMax * ph)), x = i * slot + (slot - bw) / 2, y = top + ph - h;
       var bad = s.feasible === false;
       var label = hasStack ? fPct(v) : (v >= 100000 ? compact.format(v) : fInt(v));
-      svg += '<rect class="c-bar' + (bad ? ' bad' : '') + '" x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + bw + '" height="' + h.toFixed(1) + '" rx="6"><title>' +
+      svg += '<rect class="c-bar' + (bad ? ' bad' : '') + '" x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + bw + '" height="' + h.toFixed(1) + '" rx="2"><title>' +
         esc(SCEN_LABELS[i] + ': ' + fSat(s.fee) + (s.pct !== null ? ' (' + fPct(s.pct) + ')' : '')) + '</title></rect>';
       svg += '<text class="c-val" x="' + (i * slot + slot / 2) + '" y="' + Math.max(14, y - 7).toFixed(1) + '">' + esc(label) + '</text>';
       svg += '<text class="c-lbl" x="' + (i * slot + slot / 2) + '" y="' + (top + ph + 18) + '">' + esc(fRate(s.rate)) + ' sat/vB</text>';

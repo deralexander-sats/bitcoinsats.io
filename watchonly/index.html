@@ -21,7 +21,7 @@ head_scripts:
 
   <div id="out" hidden>
     <div class="card hero">
-      <div class="hd">
+      <div class="hd hd-plain">
         <div class="seg" id="cur"><button data-c="BTC" class="on">BTC</button><button data-c="SATS">sats</button><button data-c="EUR">EUR</button><button data-c="USD">USD</button></div>
         <button class="btn" id="copy">Link kopieren</button>
       </div>
@@ -87,8 +87,8 @@ function chart(){
   for(let i=1;i<pts.length;i++)d+=' H'+X(pts[i][0])+' V'+Y(pts[i][1]);
   const area=d+` V${Y(mn)} H${X(pts[0][0])} Z`;
   const dt=t=>new Date(t*1000).toLocaleDateString('de-DE',{month:'short',year:'numeric'});
-  $('chart').innerHTML=`<svg viewBox="0 0 ${W} ${H}"><defs><linearGradient id="a" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F7931A" stop-opacity=".35"/><stop offset="1" stop-color="#F7931A" stop-opacity="0"/></linearGradient></defs>
-  <path d="${area}" fill="url(#a)"/><path d="${d}" fill="none" stroke="#F7931A" stroke-width="3" stroke-linejoin="round"/>
+  $('chart').innerHTML=`<svg viewBox="0 0 ${W} ${H}"><defs><linearGradient id="a" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--ac)" stop-opacity=".16"/><stop offset="1" style="stop-color:var(--ac)" stop-opacity="0"/></linearGradient></defs>
+  <path d="${area}" fill="url(#a)"/><path d="${d}" fill="none" style="stroke:var(--ac)" stroke-width="2" stroke-linejoin="round"/>
   <text x="${L}" y="16" fill="var(--mu)" font-size="12">Max. ${nf(mx/1e8,4)} BTC</text>
   <text x="${L}" y="${H-6}" fill="var(--mu)" font-size="12">${dt(t0)}</text>
   <text x="${W-R}" y="${H-6}" fill="var(--mu)" font-size="12" text-anchor="end">${dt(t1)}</text></svg>`;
