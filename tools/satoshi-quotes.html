@@ -174,43 +174,18 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb {
                     <div>
                         <h1 class="text-xl font-bold tracking-wide text-white flex items-center gap-2">
                             Satoshi Nakamoto
-                            <span class="text-xs font-medium px-2 py-0.5 rounded bg-btc-orange/10 text-btc-orange border border-btc-orange/30">Creator of Bitcoin</span>
                         </h1>
                         <p class="text-xs text-gray-400">Timeless thoughts on money, trust & decentralization</p>
                     </div>
                 </div>
-
-                <!-- Category Filter Dropdown -->
-                <div class="relative min-w-[180px]">
-                    <select id="categoryFilter" class="w-full bg-btc-darkBg border border-btc-border rounded-lg px-3 py-1.5 text-xs text-gray-300 focus:outline-none focus:border-btc-orange transition-colors cursor-pointer">
-                        <option value="All">Alle Kategorien (7)</option>
-                        <option value="Trust & Fiat">Trust & Fiat</option>
-                        <option value="Vision & Adoption">Vision & Adoption</option>
-                        <option value="Technical Design">Technical Design</option>
-                        <option value="Economics">Economics</option>
-                    </select>
-                </div>
             </header>
 
-            <div class="mt-4 relative">
-                <input type="text" id="searchInput" placeholder="Zitate durchsuchen..." class="w-full bg-btc-darkBg/60 border border-btc-border rounded-lg pl-9 pr-4 py-1.5 text-xs text-gray-200 placeholder-gray-500 focus:outline-none focus:border-btc-orange/80 transition-all">
-                <i data-lucide="search" class="w-4 h-4 text-gray-500 absolute left-2.5 top-2"></i>
-                <button id="clearSearch" class="hidden absolute right-2.5 top-2 text-gray-500 hover:text-gray-300 text-xs">
-                    <i data-lucide="x" class="w-4 h-4"></i>
-                </button>
-            </div>
-
-            <div id="sliderViewport" class="relative my-8 min-h-[200px] flex flex-col justify-between select-none touch-pan-y cursor-grab active:cursor-grabbing">
-                
-                <!-- Quote Mark Decoration -->
-                <div class="absolute -top-3 -left-2 text-btc-orange/15 pointer-events-none">
-                    <i data-lucide="quote" class="w-16 h-16 sm:w-20 sm:h-20"></i>
-                </div>
+            <div id="sliderViewport" class="relative mt-6 mb-8 min-h-[200px] flex flex-col justify-between select-none touch-pan-y cursor-grab active:cursor-grabbing">
 
                 <!-- Interactive Quote Text & Info Container -->
-                <div id="quoteCard" class="quote-slide relative z-10 space-y-4">
+                <div id="quoteCard" class="quote-slide relative z-10">
                     <div class="flex items-center justify-between">
-                        <span id="quoteCategory" class="text-[11px] font-semibold tracking-wider uppercase text-btc-gold bg-btc-gold/10 px-2.5 py-1 rounded border border-btc-gold/20">
+                        <span id="quoteCategory" class="text-[11px] font-semibold tracking-wider uppercase text-btc-gold">
                             Category
                         </span>
                         <span id="quoteDate" class="text-xs text-gray-400 font-mono flex items-center gap-1">
@@ -219,17 +194,24 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb {
                         </span>
                     </div>
 
-                    <blockquote id="quoteText" class="text-lg sm:text-xl font-medium leading-relaxed text-gray-100 pt-2">
-                        "Loading Satoshi's quote..."
-                    </blockquote>
+                    <!-- Textbereich: beginnt unterhalb des Anführungszeichen-Hintergrunds -->
+                    <div class="relative mt-6 pt-14 space-y-4">
+                        <div class="absolute top-0 left-0 text-btc-orange/15 pointer-events-none">
+                            <i data-lucide="quote" class="w-12 h-12"></i>
+                        </div>
 
-                    <!-- Deutsche Übersetzung -->
-                    <p id="quoteTextDe" class="text-sm text-gray-400 font-normal leading-relaxed pl-3 border-l border-btc-orange/50 italic">
-                        "Lade Übersetzung..."
-                    </p>
+                        <blockquote id="quoteText" class="text-lg sm:text-xl font-medium leading-relaxed text-gray-100">
+                            "Loading Satoshi's quote..."
+                        </blockquote>
 
-                    <div class="text-xs text-gray-400 border-l border-btc-orange/50 pl-3 py-0.5">
-                        <span id="quoteContext">Context snippet</span>
+                        <!-- Deutsche Übersetzung -->
+                        <p id="quoteTextDe" class="text-sm text-gray-400 font-normal leading-relaxed pl-3 border-l border-btc-orange/50 italic">
+                            "Lade Übersetzung..."
+                        </p>
+
+                        <div class="text-xs text-gray-400 border-l border-btc-orange/50 pl-3 py-0.5">
+                            <span id="quoteContext">Context snippet</span>
+                        </div>
                     </div>
                 </div>
 
@@ -245,7 +227,7 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb {
                 <!-- Counter & Quick Actions -->
                 <div class="flex items-center gap-3">
                     <span id="quoteCounter" class="text-xs font-mono font-semibold text-gray-400 bg-btc-darkBg px-2.5 py-1 rounded-md border border-btc-border">
-                        1 / 7
+                        1 / 9
                     </span>
 
                     <!-- Copy Quote Button -->
@@ -350,6 +332,22 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb {
                 category: "Vision & Adoption",
                 date: "2010-02-14",
                 context: "Bitcointalk Forum"
+            },
+            {
+                id: 8,
+                quote: "The Times 03/Jan/2009 Chancellor on brink of second bailout for banks.",
+                quoteDe: "Die Times, 03.01.2009: Schatzkanzler kurz vor zweitem Rettungspaket für Banken.",
+                category: "Trust & Fiat",
+                date: "2009-01-03",
+                context: "Genesis Block (Coinbase-Nachricht des ersten Blocks)"
+            },
+            {
+                id: 9,
+                quote: "WikiLeaks has kicked the hornet's nest, and the swarm is headed towards us.",
+                quoteDe: "WikiLeaks hat in ein Wespennest gestochen, und der Schwarm kommt auf uns zu.",
+                category: "Vision & Adoption",
+                date: "2010-12-11",
+                context: "Bitcointalk Forum (einer der letzten Beiträge vor Satoshis Rückzug)"
             }
         ];
 
@@ -369,9 +367,6 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb {
         const quoteContext = document.getElementById('quoteContext');
         const quoteCounter = document.getElementById('quoteCounter');
         const dotsContainer = document.getElementById('dotsContainer');
-        const categoryFilter = document.getElementById('categoryFilter');
-        const searchInput = document.getElementById('searchInput');
-        const clearSearchBtn = document.getElementById('clearSearch');
         const prevBtn = document.getElementById('prevBtn');
         const nextBtn = document.getElementById('nextBtn');
         const playPauseBtn = document.getElementById('playPauseBtn');
@@ -450,24 +445,6 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb {
             if (filteredQuotes.length === 0) return;
             currentIndex = (currentIndex - 1 + filteredQuotes.length) % filteredQuotes.length;
             renderQuote('prev');
-        }
-
-        // Filtering and Search Logic
-        function filterQuotes() {
-            const selectedCategory = categoryFilter.value;
-            const query = searchInput.value.toLowerCase().trim();
-
-            filteredQuotes = satoshiQuotes.filter(item => {
-                const matchesCategory = selectedCategory === 'All' || item.category === selectedCategory;
-                const matchesQuery = item.quote.toLowerCase().includes(query) || 
-                                     item.quoteDe.toLowerCase().includes(query) || 
-                                     item.context.toLowerCase().includes(query);
-                return matchesCategory && matchesQuery;
-            });
-
-            currentIndex = 0;
-            renderQuote('next');
-            resetAutoplay();
         }
 
         // Autoplay Functions
@@ -556,7 +533,6 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb {
 
         // Keyboard Navigation (Arrow Left/Right)
         document.addEventListener('keydown', (e) => {
-            if (document.activeElement === searchInput) return; // Ignore if user is typing in search
             if (e.key === 'ArrowRight') {
                 nextQuote();
                 resetAutoplay();
@@ -571,18 +547,6 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb {
         prevBtn.addEventListener('click', () => { prevQuote(); resetAutoplay(); });
         playPauseBtn.addEventListener('click', togglePlayPause);
         copyBtn.addEventListener('click', copyToClipboard);
-
-        categoryFilter.addEventListener('change', filterQuotes);
-        searchInput.addEventListener('input', () => {
-            clearSearchBtn.classList.toggle('hidden', searchInput.value === '');
-            filterQuotes();
-        });
-
-        clearSearchBtn.addEventListener('click', () => {
-            searchInput.value = '';
-            clearSearchBtn.classList.add('hidden');
-            filterQuotes();
-        });
 
         // Pause autoplay when hovering over slider for readability
         sliderViewport.addEventListener('mouseenter', stopAutoplay);
