@@ -174,7 +174,7 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb {
                     <div>
                         <h1 class="text-xl font-bold tracking-wide text-white flex items-center gap-2">
                             Satoshi Nakamoto
-                        
+                            <span class="text-xs font-medium px-2 py-0.5 rounded bg-btc-orange/10 text-btc-orange border border-btc-orange/30">Creator of Bitcoin</span>
                         </h1>
                         <p class="text-xs text-gray-400">Timeless thoughts on money, trust & decentralization</p>
                     </div>
@@ -193,6 +193,11 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb {
             </header>
 
             <div class="mt-4 relative">
+                <input type="text" id="searchInput" placeholder="Zitate durchsuchen..." class="w-full bg-btc-darkBg/60 border border-btc-border rounded-lg pl-9 pr-4 py-1.5 text-xs text-gray-200 placeholder-gray-500 focus:outline-none focus:border-btc-orange/80 transition-all">
+                <i data-lucide="search" class="w-4 h-4 text-gray-500 absolute left-2.5 top-2"></i>
+                <button id="clearSearch" class="hidden absolute right-2.5 top-2 text-gray-500 hover:text-gray-300 text-xs">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
             </div>
 
             <div id="sliderViewport" class="relative my-8 min-h-[200px] flex flex-col justify-between select-none touch-pan-y cursor-grab active:cursor-grabbing">
