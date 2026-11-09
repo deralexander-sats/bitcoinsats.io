@@ -1,0 +1,227 @@
+/* btc-chart.css — Stile für den Bitcoin-Chart. Alle Klassen tragen den Namensraum "btcc".
+ * Farben sind als Variablen am Container definiert; wer die Variablen der Seite nutzen möchte,
+ * ersetzt die Werte in den beiden Blöcken "Hell" und "Dunkel" (siehe README). */
+
+/* ---------- Hell (Standard) ---------- */
+.btcc {
+  --btcc-page: #FBF8F3;
+  --btcc-card: #FFFFFF;
+  --btcc-text: #14181F;
+  --btcc-muted: rgba(20, 24, 31, 0.58);
+  --btcc-border: rgba(20, 24, 31, 0.10);
+  --btcc-grid: rgba(20, 24, 31, 0.07);
+  --btcc-price: #F7931A;
+  --btcc-price-fill: rgba(247, 147, 26, 0.13);
+  --btcc-wma: #1F4FD8;
+  --btcc-tag-text: #FFFFFF;
+  --btcc-pos: #0F7B45;
+  --btcc-neg: #C23B2E;
+  --btcc-accent-soft: #FFC15E;
+  --btcc-chip: rgba(20, 24, 31, 0.05);
+  --btcc-shadow: 0 1px 2px rgba(20, 24, 31, 0.04), 0 8px 24px rgba(20, 24, 31, 0.05);
+}
+
+/* ---------- Dunkel ---------- */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not(.light) .btcc {
+    --btcc-page: #0C1017;
+    --btcc-card: #131923;
+    --btcc-text: #F2EEE7;
+    --btcc-muted: rgba(242, 238, 231, 0.62);
+    --btcc-border: rgba(255, 255, 255, 0.10);
+    --btcc-grid: rgba(255, 255, 255, 0.07);
+    --btcc-price-fill: rgba(247, 147, 26, 0.16);
+    --btcc-wma: #7FA9FF;
+    --btcc-tag-text: #0C1017;
+    --btcc-pos: #4FD08A;
+    --btcc-neg: #FF8A7A;
+    --btcc-chip: rgba(255, 255, 255, 0.07);
+    --btcc-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.25);
+  }
+}
+:root[data-theme="dark"] .btcc,
+:root.dark .btcc,
+:root[data-bs-theme="dark"] .btcc {
+  --btcc-page: #0C1017;
+  --btcc-card: #131923;
+  --btcc-text: #F2EEE7;
+  --btcc-muted: rgba(242, 238, 231, 0.62);
+  --btcc-border: rgba(255, 255, 255, 0.10);
+  --btcc-grid: rgba(255, 255, 255, 0.07);
+  --btcc-price-fill: rgba(247, 147, 26, 0.16);
+  --btcc-wma: #7FA9FF;
+  --btcc-tag-text: #0C1017;
+  --btcc-pos: #4FD08A;
+  --btcc-neg: #FF8A7A;
+  --btcc-chip: rgba(255, 255, 255, 0.07);
+  --btcc-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+/* ---------- Karte ---------- */
+.btcc {
+  box-sizing: border-box;
+  position: relative;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px 22px 14px;
+  background: var(--btcc-card);
+  color: var(--btcc-text);
+  border: 1px solid var(--btcc-border);
+  border-radius: 20px;
+  box-shadow: var(--btcc-shadow);
+  font-family: ui-rounded, "SF Pro Rounded", "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+.btcc *, .btcc *::before, .btcc *::after { box-sizing: border-box; }
+
+/* ---------- Kennzahlen ---------- */
+.btcc__stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px 24px;
+  margin-bottom: 14px;
+}
+.btcc__stat { min-width: 0; }
+.btcc__label {
+  display: flex; align-items: center; gap: 7px;
+  font-size: 12.5px; font-weight: 500; letter-spacing: .01em;
+  color: var(--btcc-muted);
+}
+.btcc__stat--price .btcc__label::before,
+.btcc__stat--wma .btcc__label::before {
+  content: ""; display: inline-block; flex: none;
+  width: 14px; height: 3px; border-radius: 2px;
+}
+.btcc__stat--price .btcc__label::before { background: var(--btcc-price); height: 2px; }
+.btcc__stat--wma .btcc__label::before { background: var(--btcc-wma); height: 4px; }
+.btcc__value {
+  margin-top: 3px;
+  font-size: clamp(20px, 3.2vw, 30px);
+  font-weight: 650; letter-spacing: -0.01em; line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.btcc__stat--wma .btcc__value { color: var(--btcc-wma); }
+.btcc__stat--gap .btcc__value { font-size: clamp(22px, 3.6vw, 34px); }
+.btcc__sub {
+  margin-top: 2px; min-height: 1.3em;
+  font-size: 12.5px; color: var(--btcc-muted);
+  font-variant-numeric: tabular-nums;
+}
+.btcc__pos { color: var(--btcc-pos); }
+.btcc__neg { color: var(--btcc-neg); }
+
+/* ---------- Zeitraumauswahl ---------- */
+.btcc__toolbar {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  margin-bottom: 6px;
+}
+.btcc__ranges {
+  display: inline-flex; gap: 2px; padding: 3px;
+  background: var(--btcc-chip); border-radius: 12px;
+  max-width: 100%; overflow-x: auto; scrollbar-width: none;
+}
+.btcc__ranges::-webkit-scrollbar { display: none; }
+.btcc__range, .btcc__log, .btcc__retry {
+  font: inherit; font-size: 13px; font-weight: 600; color: var(--btcc-muted);
+  background: transparent; border: 0; cursor: pointer;
+  min-height: 34px; min-width: 38px; padding: 0 10px; border-radius: 9px;
+  transition: background .15s, color .15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.btcc__range:hover, .btcc__log:hover { color: var(--btcc-text); }
+.btcc__range.is-active {
+  background: var(--btcc-card); color: var(--btcc-text);
+  box-shadow: 0 0 0 1px var(--btcc-border), 0 1px 3px rgba(20, 24, 31, 0.10);
+}
+.btcc__log {
+  flex: none; min-width: 44px; background: var(--btcc-chip);
+}
+.btcc__log.is-active { background: var(--btcc-price); color: #14181F; }
+.btcc__range:focus-visible, .btcc__log:focus-visible, .btcc__retry:focus-visible,
+.btcc__canvas:focus-visible {
+  outline: 2px solid var(--btcc-wma); outline-offset: 2px;
+}
+
+/* ---------- Zeichenfläche ---------- */
+.btcc__plot {
+  position: relative;
+  height: clamp(300px, 56vh, 540px);
+  margin: 0 -6px;
+  user-select: none; -webkit-user-select: none;
+}
+.btcc__canvas { position: absolute; inset: 0; display: block; }
+.btcc__canvas--over { touch-action: pan-y; cursor: crosshair; outline-offset: -2px; }
+
+.btcc__tip {
+  position: absolute; left: 0; top: 0; z-index: 3; pointer-events: none;
+  min-width: 190px; padding: 10px 12px;
+  background: var(--btcc-card); color: var(--btcc-text);
+  border: 1px solid var(--btcc-border); border-radius: 12px;
+  box-shadow: 0 6px 24px rgba(20, 24, 31, 0.16);
+  font-size: 13px; line-height: 1.35;
+  font-variant-numeric: tabular-nums;
+}
+.btcc__tip[hidden] { display: none; }
+.btcc__tip-date { font-weight: 650; margin-bottom: 6px; }
+.btcc__tip-row {
+  display: grid; grid-template-columns: 12px 1fr auto; align-items: center; column-gap: 7px;
+  padding: 1.5px 0;
+}
+.btcc__tip-row > span:nth-child(2) { color: var(--btcc-muted); }
+.btcc__tip-row b { font-weight: 650; }
+.btcc__tip-gap { margin-top: 4px; padding-top: 6px; border-top: 1px solid var(--btcc-border); }
+.btcc__tip-muted b { font-weight: 500; color: var(--btcc-muted); }
+.btcc__dot { width: 9px; height: 9px; border-radius: 50%; }
+.btcc__dot--price { background: var(--btcc-price); }
+.btcc__dot--wma { background: var(--btcc-wma); }
+
+.btcc__status {
+  position: absolute; inset: 0; z-index: 4;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
+  padding: 24px; text-align: center; font-size: 14px; color: var(--btcc-muted);
+  background: color-mix(in srgb, var(--btcc-card) 88%, transparent);
+  border-radius: 12px;
+}
+.btcc__status[hidden] { display: none; }
+.btcc__status--loading span::after {
+  content: ""; display: inline-block; width: 14px; height: 14px; margin-left: 10px;
+  vertical-align: -2px; border-radius: 50%;
+  border: 2px solid var(--btcc-border); border-top-color: var(--btcc-price);
+  animation: btcc-spin .8s linear infinite;
+}
+.btcc__retry {
+  color: var(--btcc-text); background: var(--btcc-chip); padding: 0 16px;
+  border: 1px solid var(--btcc-border);
+}
+@keyframes btcc-spin { to { transform: rotate(360deg); } }
+
+/* ---------- Legende / Hinweis ---------- */
+.btcc__legend {
+  display: flex; flex-wrap: wrap; gap: 4px 18px; align-items: center;
+  margin-top: 6px; font-size: 12.5px; color: var(--btcc-muted);
+}
+.btcc__item { display: inline-flex; align-items: center; white-space: nowrap; }
+.btcc__key { display: inline-block; width: 18px; margin-right: 7px; border-radius: 2px; }
+.btcc__legend .btcc__key--price { height: 2px; background: var(--btcc-price); }
+.btcc__legend .btcc__key--wma { height: 4px; background: var(--btcc-wma); }
+.btcc__note {
+  margin: 8px 0 0; font-size: 11.5px; line-height: 1.5; color: var(--btcc-muted);
+}
+
+/* ---------- Kleine Bildschirme ---------- */
+@media (max-width: 640px) {
+  .btcc { padding: 14px 14px 12px; border-radius: 16px; }
+  .btcc__stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 14px; }
+  .btcc__stat--gap { grid-column: 1 / -1; }
+  .btcc__stat--gap .btcc__value { display: inline-block; }
+  .btcc__stat--gap .btcc__sub { display: inline-block; margin-left: 10px; }
+  .btcc__toolbar { gap: 6px; }
+  .btcc__ranges { flex: 1; justify-content: space-between; }
+  .btcc__range { flex: 1; min-width: 0; padding: 0 4px; font-size: 12.5px; min-height: 38px; }
+  .btcc__plot { height: clamp(280px, 48vh, 420px); margin: 0 -4px; }
+  .btcc__tip { min-width: 170px; font-size: 12.5px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .btcc__status--loading span::after { animation-duration: 2.4s; }
+}
