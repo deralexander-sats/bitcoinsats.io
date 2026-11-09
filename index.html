@@ -5,12 +5,17 @@ description: "Sachliche Informationen und praktische Werkzeuge rund um Bitcoin. 
 canonical: "/"
 og_title: "bitcoinsats.io | Informationen und Tools rund um Bitcoin"
 og_description: "Bitcoin studieren. Wert speichern. Die richtigen Werkzeuge nutzen. Bitcoin und Sats erfahren."
+head_styles:
+  - "/tools/bitcoin-chart/btc-chart.css"
 ---
   <main>
     <p class="hero-statement">Bitcoin ist ein erlaubnisfreies Zahlungsnetzwerk und ein nahezu perfektes Geld.</p>
        <p class="hero-statement-sats">Ein Sat ist die kleinste Einheit von Bitcoin. Der Begriff steht für Satoshi und ist nach dem Bitcoin-Erfinder Satoshi Nakamoto benannt.
 <br>1 Bitcoin = 100.000.000 Sats.</p>
    <!-- <a class="btn" href="/watchonly/">Bitcoin-Balance-Monitor öffnen</a>-->
+
+    <h2>Bitcoin-Kurs</h2>
+    {% include btc-chart.html %}
 
     <h2>Tools</h2>
     <div class="grid">

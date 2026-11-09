@@ -1,41 +1,14 @@
-<!doctype html>
-<html lang="de">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Bitcoin-Kurs &amp; 200-Wochen-Durchschnitt | bitcoinsats.io</title>
-  <meta name="description" content="Interaktiver Bitcoin-Chart in Euro mit 200-Wochen-Durchschnitt (200WMA) und dem aktuellen Abstand des Kurses zur Linie.">
-  <meta name="color-scheme" content="light dark">
-
-  <!-- Gemeinsames Stylesheet der Seite (Kopfzeile, Logo, Grundfarben) -->
-  <link rel="stylesheet" href="/css/style.css">
-  <!-- Chart-Stile (Namensraum .btcc) -->
-  <link rel="stylesheet" href="/tools/bitcoin-chart/btc-chart.css">
-
-  <style>
-    /* Nur Seitenrahmen für dieses Tool – der Chart selbst steckt komplett in btc-chart.css */
-    .btcc-page { max-width: 1180px; margin: 0 auto; padding: 28px 16px 56px; }
-    .btcc-page h1 { margin: 0 0 6px; font-size: clamp(24px, 4vw, 34px); letter-spacing: -0.015em; }
-    .btcc-page .btcc-lead { margin: 0 0 22px; max-width: 62ch; color: rgba(20, 24, 31, .62); line-height: 1.55; }
-    @media (prefers-color-scheme: dark) {
-      :root:not([data-theme="light"]) .btcc-page .btcc-lead { color: rgba(242, 238, 231, .66); }
-    }
-    :root[data-theme="dark"] .btcc-page .btcc-lead { color: rgba(242, 238, 231, .66); }
-  </style>
-</head>
-<body>
-  <!-- Zentrale Kopfzeile/Menü der Seite hier einfügen (wie bei den anderen Tools) -->
-
-  <main class="btcc-page">
-    <h1>Bitcoin-Kurs &amp; 200-Wochen-Durchschnitt</h1>
-    <p class="btcc-lead">Wie weit liegt Bitcoin über oder unter seinem langfristigen Durchschnitt? Die blaue Linie zeigt den Mittelwert der letzten 200 Wochenschlusskurse.</p>
-
-    <div data-btc-chart></div>
+---
+layout: default
+title: "Bitcoin-Chart mit 200-Wochen-Durchschnitt | bitcoinsats.io"
+description: "Bitcoin-Kurs in Dollar und Euro mit 200-Wochen-Durchschnitt (200WMA) und dem aktuellen Abstand des Kurses zur Linie. Zeiträume von einem Monat bis zur gesamten Historie."
+og_description: "Bitcoin-Kurs mit 200-Wochen-Durchschnitt und aktuellem Abstand. Zeiträume von einem Monat bis zur gesamten Historie."
+canonical: "/tools/bitcoin-chart/"
+referrer: "no-referrer"
+head_styles:
+  - "/tools/bitcoin-chart/btc-chart.css"
+---
+  <main>
+    <h1>Bitcoin-<em>Chart</em></h1>
+    {% include btc-chart.html %}
   </main>
-
-  <script src="/tools/bitcoin-chart/js/btc-calc.js" defer></script>
-  <script src="/tools/bitcoin-chart/js/btc-data.js" defer></script>
-  <script src="/tools/bitcoin-chart/js/btc-chart.js" defer></script>
-  <script src="/tools/bitcoin-chart/js/btc-app.js" defer></script>
-</body>
-</html>

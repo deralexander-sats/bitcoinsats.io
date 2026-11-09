@@ -7,3 +7,6 @@
 - title: "UTXO-Rechner"
   url: /tools/utxo-rechner/
   text: "UTXOs durch regelmäßige Käufe, Konsolidierungsgebühren und Dust-Schwellenwerte berechnen."
+- title: "Bitcoin-Chart"
+  url: /tools/bitcoin-chart/
+  text: "Bitcoin-Kurs mit 200-Wochen-Durchschnitt: aktueller Abstand, Zeiträume von einem Monat bis zur gesamten Historie."

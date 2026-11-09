@@ -3,12 +3,16 @@
  * und Darstellung (BtcChartView).
  *
  * Einbindung: <div data-btc-chart></div> + btc-calc.js, btc-data.js, btc-chart.js, btc-app.js, btc-chart.css
+ * (auf der Seite erledigt das _includes/btc-chart.html)
  */
 (function (root) {
   'use strict';
 
   var Calc = root.BtcCalc, Data = root.BtcData, View = root.BtcChartView;
   var DAY = Calc.DAY_MS;
+
+  var CURRENCIES = { USD: { sym: '$' }, EUR: { sym: '€' } };
+  var DEFAULT_CURRENCY = 'USD';
 
   // src: 'daily' = Tageskerzen (Kraken liefert max. 720 Tage), 'weekly' = Wochenkerzen
   var RANGES = [
@@ -32,8 +36,6 @@
   var dfTime = new Intl.DateTimeFormat('de-DE', { hour: '2-digit', minute: '2-digit' });
   var NB = ' ';
 
-  function eur(v) { return nf0.format(Math.round(v)) + NB + '€'; }
-  function eurSigned(v) { return nfSigned0.format(Math.round(v)) + NB + '€'; }
   function pct(v) { return nfPct.format(v) + NB + '%'; }
   function el(tag, cls, text) {
     var e = document.createElement(tag);
@@ -69,7 +71,7 @@
     var sGap = stat('btcc__stat--gap', 'Abstand zur 200WMA');
 
     var toolbar = el('div', 'btcc__toolbar');
-    var ranges = el('div', 'btcc__ranges');
+    var ranges = el('div', 'btcc__seg btcc__ranges');
     ranges.setAttribute('role', 'radiogroup');
     ranges.setAttribute('aria-label', 'Zeitraum');
     var rangeBtns = {};
@@ -83,37 +85,58 @@
       ranges.appendChild(b);
       rangeBtns[r.id] = b;
     });
+
+    var tools = el('div', 'btcc__tools');
+    var curSeg = el('div', 'btcc__seg btcc__cur');
+    curSeg.setAttribute('role', 'radiogroup');
+    curSeg.setAttribute('aria-label', 'Währung');
+    var curBtns = {};
+    Object.keys(CURRENCIES).forEach(function (code) {
+      var b = el('button', 'btcc__curbtn', code);
+      b.type = 'button';
+      b.setAttribute('role', 'radio');
+      b.dataset.cur = code;
+      curSeg.appendChild(b);
+      curBtns[code] = b;
+    });
     var logBtn = el('button', 'btcc__log', 'Log');
     logBtn.type = 'button';
     logBtn.title = 'Logarithmische Preisachse';
     logBtn.setAttribute('aria-pressed', 'false');
+    tools.appendChild(curSeg);
+    tools.appendChild(logBtn);
+
     toolbar.appendChild(ranges);
-    toolbar.appendChild(logBtn);
+    toolbar.appendChild(tools);
 
     var plot = el('div', 'btcc__plot');
     var status = el('div', 'btcc__status');
     status.setAttribute('role', 'status');
     plot.appendChild(status);
 
-    var legend = el('div', 'btcc__legend');
-    legend.innerHTML = '<span class="btcc__item"><span class="btcc__key btcc__key--price"></span>Bitcoin (EUR)</span>' +
-      '<span class="btcc__item"><span class="btcc__key btcc__key--wma"></span>200-Wochen-Durchschnitt</span>';
-
-    var note = el('p', 'btcc__note');
+    var note = el('p', 'btcc__note'); // nur für Warnhinweise (veraltete Daten, Live-Kurs nicht erreichbar)
 
     host.appendChild(stats);
     host.appendChild(toolbar);
     host.appendChild(plot);
-    host.appendChild(legend);
     host.appendChild(note);
 
-    /* ---------- Zustand ---------- */
+    /* ---------- Zustand (je Währung getrennt) ---------- */
+    function newCurState() {
+      return { weekly: [], daily: [], live: NaN, liveAt: 0, series: null, liveFailed: false, stale: false, loaded: false, loading: false };
+    }
     var S = {
-      weekly: [], daily: [], live: NaN, liveAt: 0,
-      series: null, rangeId: DEFAULT_RANGE, log: lsGet('btcc:log') === '1',
-      liveFailed: false, stale: false, loaded: false
+      cur: DEFAULT_CURRENCY,
+      rangeId: DEFAULT_RANGE,
+      log: lsGet('btcc:log') === '1',
+      byCur: { USD: newCurState(), EUR: newCurState() }
     };
     var rangeSrc = 'weekly';
+
+    function C() { return S.byCur[S.cur]; }
+    function sym() { return CURRENCIES[S.cur].sym; }
+    function money(v) { return nf0.format(Math.round(v)) + NB + sym(); }
+    function moneySigned(v) { return nfSigned0.format(Math.round(v)) + NB + sym(); }
 
     var view = View.create(plot, { tooltip: tooltipHtml });
 
@@ -129,10 +152,10 @@
     }
     function tooltipHtml(pt, w) {
       var rows = '<div class="btcc__tip-date">' + dateLabel(pt) + '</div>' +
-        '<div class="btcc__tip-row"><span class="btcc__dot btcc__dot--price"></span><span>Bitcoin</span><b>' + eur(pt.c) + '</b></div>';
+        '<div class="btcc__tip-row"><span class="btcc__dot btcc__dot--price"></span><span>Bitcoin</span><b>' + money(pt.c) + '</b></div>';
       if (w) {
         var g = Calc.gap(pt.c, w.v);
-        rows += '<div class="btcc__tip-row"><span class="btcc__dot btcc__dot--wma"></span><span>200WMA</span><b>' + eur(w.v) + '</b></div>' +
+        rows += '<div class="btcc__tip-row"><span class="btcc__dot btcc__dot--wma"></span><span>200WMA</span><b>' + money(w.v) + '</b></div>' +
           '<div class="btcc__tip-row btcc__tip-gap"><span></span><span>Abweichung</span><b class="' +
           (g.pct >= 0 ? 'btcc__pos' : 'btcc__neg') + '">' + pct(g.pct) + '</b></div>';
       } else {
@@ -156,24 +179,30 @@
       }
     }
 
+    function resetStats() {
+      [sPrice, sWma, sGap].forEach(function (s) { s.value.textContent = '–'; s.sub.textContent = NB; });
+      sGap.value.className = 'btcc__value';
+    }
+
     function renderStats() {
-      var L = S.series && S.series.latest;
-      if (!L) return;
-      sPrice.value.textContent = eur(L.price);
-      sPrice.sub.textContent = S.liveFailed ? 'letzter Schlusskurs' : (S.liveAt ? 'Stand ' + dfTime.format(S.liveAt) + ' Uhr' : NB);
-      sWma.value.textContent = eur(L.wma);
+      var st = C();
+      var L = st.series && st.series.latest;
+      if (!L) { resetStats(); return; }
+      sPrice.value.textContent = money(L.price);
+      sPrice.sub.textContent = st.liveFailed ? 'letzter Schlusskurs' : (st.liveAt ? 'Stand ' + dfTime.format(st.liveAt) + ' Uhr' : NB);
+      sWma.value.textContent = money(L.wma);
       sWma.sub.textContent = '200 Wochen Ø';
       var g = L.gap;
       sGap.value.textContent = pct(g.pct);
       sGap.value.className = 'btcc__value ' + (g.pct >= 0 ? 'btcc__pos' : 'btcc__neg');
-      sGap.sub.textContent = eurSigned(g.abs);
+      sGap.sub.textContent = moneySigned(g.abs);
     }
 
-    function sliceForRange() {
+    function sliceForRange(series) {
       var r = currentRange();
       var src = r.src;
-      if (src === 'daily' && S.series.daily.length < 5) src = 'weekly'; // Tagesdaten nicht verfügbar
-      var pts = src === 'daily' ? S.series.daily : S.series.weekly;
+      if (src === 'daily' && series.daily.length < 5) src = 'weekly'; // Tagesdaten nicht verfügbar
+      var pts = src === 'daily' ? series.daily : series.weekly;
       rangeSrc = src;
       if (r.days === Infinity) return pts;
       var from = Date.now() - r.days * DAY;
@@ -181,97 +210,118 @@
       return out.length >= 2 ? out : pts.slice(-2);
     }
 
-    function renderChart() {
+    function renderControls() {
       Object.keys(rangeBtns).forEach(function (id) {
         var on = id === S.rangeId;
-        rangeBtns[id].classList.toggle('is-active', on);
+        rangeBtns[id].classList.toggle('on', on);
         rangeBtns[id].setAttribute('aria-checked', on ? 'true' : 'false');
         rangeBtns[id].tabIndex = on ? 0 : -1;
       });
+      Object.keys(curBtns).forEach(function (code) {
+        var on = code === S.cur;
+        curBtns[code].classList.toggle('on', on);
+        curBtns[code].setAttribute('aria-checked', on ? 'true' : 'false');
+        curBtns[code].tabIndex = on ? 0 : -1;
+      });
       logBtn.setAttribute('aria-pressed', S.log ? 'true' : 'false');
-      logBtn.classList.toggle('is-active', S.log);
-      if (!S.series || !S.weekly.length) return;
+      logBtn.classList.toggle('on', S.log);
+    }
 
-      var pts = sliceForRange();
-      view.setData(pts, S.series.wma, { log: S.log });
-      var L = S.series.latest;
+    function renderChart() {
+      renderControls();
+      var st = C();
+      if (!st.series || !st.weekly.length) return;
+
+      var pts = sliceForRange(st.series);
+      view.setData(pts, st.series.wma, { log: S.log, sym: sym() });
+      var L = st.series.latest;
       var r = currentRange();
-      view.setLabel('Bitcoin-Kurs in Euro, Zeitraum ' + r.title + (L ? '. Aktuell ' + eur(L.price) + ', 200WMA ' + eur(L.wma) +
+      view.setLabel('Bitcoin-Kurs in ' + S.cur + ', Zeitraum ' + r.title + (L ? '. Aktuell ' + money(L.price) + ', 200WMA ' + money(L.wma) +
         ', Abstand ' + pct(L.gap.pct) : '') + '. Mit Pfeiltasten durch die Werte navigieren.');
     }
 
     function renderNote() {
-      var txt = 'Daten: Kraken (XBT/EUR). 200WMA = einfacher Durchschnitt der letzten 200 Wochenschlusskurse; ' +
-        'die laufende Woche geht mit dem aktuellen Kurs ein. Keine Anlageberatung.';
-      if (S.stale) txt += ' Hinweis: Es werden zwischengespeicherte Daten angezeigt, die Aktualisierung ist fehlgeschlagen.';
-      else if (S.liveFailed) txt += ' Hinweis: Der Live-Kurs ist gerade nicht erreichbar; es gilt der letzte Kerzenschluss.';
+      var st = C(), txt = '';
+      if (st.stale) txt = 'Hinweis: Es werden zwischengespeicherte Daten angezeigt, die Aktualisierung ist fehlgeschlagen.';
+      else if (st.liveFailed) txt = 'Hinweis: Der Live-Kurs ist gerade nicht erreichbar; es gilt der letzte Kerzenschluss.';
       note.textContent = txt;
     }
 
-    function rebuild() {
-      if (!S.weekly.length) return;
-      S.series = Calc.buildSeries(S.weekly, S.daily, S.live, Date.now());
-      if (!S.series.latest) {
-        setStatus('Für die 200WMA liegen noch nicht genügend Wochendaten vor.', 'error');
-        return;
-      }
+    function renderAll() {
+      var st = C();
+      if (!st.series || !st.series.latest) { renderControls(); return; }
       setStatus('');
       renderStats();
       renderChart();
       renderNote();
     }
 
-    /* ---------- Laden ---------- */
-    var loading = false;
-    function loadAll() {
-      if (loading) return Promise.resolve();
-      loading = true;
-      if (!S.loaded) setStatus('Kursdaten werden geladen …', 'loading');
+    function rebuild(cur) {
+      var st = S.byCur[cur];
+      if (!st.weekly.length) return;
+      st.series = Calc.buildSeries(st.weekly, st.daily, st.live, Date.now());
+      if (cur !== S.cur) return; // andere Währung ist gerade nicht sichtbar
+      if (!st.series.latest) {
+        setStatus('Für die 200WMA liegen noch nicht genügend Wochendaten vor.', 'error');
+        return;
+      }
+      renderAll();
+    }
 
-      var wp = Data.fetchCandles(Data.INTERVAL_WEEK, {
-        onUpdate: function (fresh) { S.weekly = fresh.candles; S.stale = false; rebuild(); }
+    /* ---------- Laden ---------- */
+    function loadAll(cur) {
+      var st = S.byCur[cur];
+      if (st.loading) return Promise.resolve();
+      st.loading = true;
+      if (!st.loaded && cur === S.cur) setStatus('Kursdaten werden geladen …', 'loading');
+
+      var wp = Data.fetchCandles(cur, Data.INTERVAL_WEEK, {
+        onUpdate: function (fresh) { st.weekly = fresh.candles; st.stale = false; rebuild(cur); }
       });
-      var dp = Data.fetchCandles(Data.INTERVAL_DAY, {
-        onUpdate: function (fresh) { S.daily = fresh.candles; rebuild(); }
+      var dp = Data.fetchCandles(cur, Data.INTERVAL_DAY, {
+        onUpdate: function (fresh) { st.daily = fresh.candles; rebuild(cur); }
       }).catch(function () { return null; }); // Tagesdaten sind optional
-      var lp = Data.fetchLivePrice().then(function (p) {
-        S.live = p; S.liveAt = Date.now(); S.liveFailed = false;
-      }).catch(function () { S.liveFailed = true; });
+      var lp = Data.fetchLivePrice(cur).then(function (p) {
+        st.live = p; st.liveAt = Date.now(); st.liveFailed = false;
+      }).catch(function () { st.liveFailed = true; });
 
       return Promise.all([wp.then(function (r) { return r; }, function (e) { return { error: e }; }), dp, lp])
         .then(function (res) {
           var w = res[0], d = res[1];
           if (w.error) {
-            if (!S.weekly.length) {
-              setStatus('Die Kursdaten konnten nicht geladen werden. Bitte Verbindung prüfen.', 'error', function () { loadAll(); });
+            if (!st.weekly.length) {
+              if (cur === S.cur) setStatus('Die Kursdaten konnten nicht geladen werden. Bitte Verbindung prüfen.', 'error', function () { loadAll(cur); });
               return;
             }
-            S.stale = true;
+            st.stale = true;
           } else {
-            S.weekly = w.candles;
-            S.stale = false;
+            st.weekly = w.candles;
+            st.stale = false;
           }
-          if (d) S.daily = d.candles;
-          S.loaded = true;
-          rebuild();
+          if (d) st.daily = d.candles;
+          st.loaded = true;
+          rebuild(cur);
         })
-        .then(function () { loading = false; }, function () { loading = false; });
+        .then(function () { st.loading = false; }, function () { st.loading = false; });
     }
 
     function refreshLive() {
-      if (!S.loaded || document.hidden) return;
-      Data.fetchLivePrice().then(function (p) {
-        S.live = p; S.liveAt = Date.now(); S.liveFailed = false;
-        rebuild();
-      }).catch(function () { S.liveFailed = true; renderStats(); renderNote(); });
+      var cur = S.cur, st = C();
+      if (!st.loaded || document.hidden) return;
+      Data.fetchLivePrice(cur).then(function (p) {
+        st.live = p; st.liveAt = Date.now(); st.liveFailed = false;
+        rebuild(cur);
+      }).catch(function () { st.liveFailed = true; if (cur === S.cur) { renderStats(); renderNote(); } });
     }
 
     /* ---------- Ereignisse ---------- */
+    function pickRange(id) {
+      S.rangeId = id; // bewusst nicht gespeichert: beim Öffnen gilt immer 3 Jahre
+      renderChart();
+    }
     ranges.addEventListener('click', function (e) {
       var b = e.target.closest('.btcc__range');
-      if (!b) return;
-      S.rangeId = b.dataset.range; // bewusst nicht gespeichert: beim Öffnen gilt immer 3 Jahre
-      renderChart();
+      if (b) pickRange(b.dataset.range);
     });
     ranges.addEventListener('keydown', function (e) {
       var ids = RANGES.map(function (r) { return r.id; });
@@ -280,22 +330,48 @@
       else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') i = Math.max(0, i - 1);
       else return;
       e.preventDefault();
-      S.rangeId = ids[i];
-      renderChart();
+      pickRange(ids[i]);
       rangeBtns[S.rangeId].focus();
     });
+
+    function pickCurrency(code) {
+      if (code === S.cur) return;
+      S.cur = code;
+      renderControls();
+      var st = C();
+      if (st.series && st.series.latest) {
+        renderAll();
+        refreshLive();
+      } else {
+        resetStats();
+        note.textContent = '';
+        loadAll(code);
+      }
+    }
+    curSeg.addEventListener('click', function (e) {
+      var b = e.target.closest('.btcc__curbtn');
+      if (b) pickCurrency(b.dataset.cur);
+    });
+    curSeg.addEventListener('keydown', function (e) {
+      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+      e.preventDefault();
+      var codes = Object.keys(CURRENCIES);
+      var next = codes[(codes.indexOf(S.cur) + (e.key === 'ArrowRight' ? 1 : codes.length - 1)) % codes.length];
+      pickCurrency(next);
+      curBtns[S.cur].focus();
+    });
+
     logBtn.addEventListener('click', function () {
       S.log = !S.log;
       lsSet('btcc:log', S.log ? '1' : '0');
       renderChart();
     });
 
-    // Hell-/Dunkelmodus der Seite: Attribut- oder Klassenwechsel am <html>/<body> sowie Systemeinstellung
+    // Hell-/Dunkelmodus: die Seite setzt data-theme am <html>-Element (js/site.js); zusätzlich Systemeinstellung
     var redraw = function () { view.redraw(); };
     if (typeof MutationObserver !== 'undefined') {
       var mo = new MutationObserver(redraw);
-      mo.observe(document.documentElement, { attributes: true, attributeFilter: ['class', 'data-theme', 'data-bs-theme', 'style'] });
-      if (document.body) mo.observe(document.body, { attributes: true, attributeFilter: ['class', 'data-theme'] });
+      mo.observe(document.documentElement, { attributes: true, attributeFilter: ['class', 'data-theme', 'data-bs-theme'] });
     }
     if (window.matchMedia) {
       var mq = window.matchMedia('(prefers-color-scheme: dark)');
@@ -303,13 +379,13 @@
     }
 
     setInterval(refreshLive, LIVE_REFRESH_MS);
-    setInterval(function () { if (!document.hidden) loadAll(); }, CANDLE_REFRESH_MS);
+    setInterval(function () { if (!document.hidden) loadAll(S.cur); }, CANDLE_REFRESH_MS);
     document.addEventListener('visibilitychange', function () {
       if (!document.hidden) refreshLive();
     });
 
-    renderChart(); // markiert die Standardauswahl (3J) schon vor dem Laden
-    loadAll();
+    renderControls(); // markiert Standardauswahl (3J, USD) schon vor dem Laden
+    loadAll(S.cur);
   }
 
   function autoMount() {

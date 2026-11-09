@@ -5,3 +5,5 @@ lang: de
 exclude:
   - README.md
   - tests
+  - tools/bitcoin-chart/README.md
+  - tools/bitcoin-chart/tests

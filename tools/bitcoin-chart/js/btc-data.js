@@ -1,10 +1,10 @@
 /*!
  * btc-data.js — Datenbeschaffung für den Bitcoin-Chart (nur Netzwerk + Cache, keine Berechnung).
  *
- * Datenquelle: Kraken Public API (kostenlos, ohne API-Key, CORS-fähig), Handelspaar XBT/EUR.
- *   - Wochenkerzen  : GET /0/public/OHLC?pair=XBTEUR&interval=10080  (max. 720 Kerzen ≈ 13,8 Jahre)
- *   - Tageskerzen   : GET /0/public/OHLC?pair=XBTEUR&interval=1440   (max. 720 Kerzen ≈ 2 Jahre)
- *   - Live-Kurs     : GET /0/public/Ticker?pair=XBTEUR
+ * Datenquelle: Kraken Public API (kostenlos, ohne API-Key, CORS-fähig), Handelspaare XBT/USD und XBT/EUR.
+ *   - Wochenkerzen  : GET /0/public/OHLC?pair=XBTUSD&interval=10080  (max. 720 Kerzen ≈ 13,8 Jahre)
+ *   - Tageskerzen   : GET /0/public/OHLC?pair=XBTUSD&interval=1440   (max. 720 Kerzen ≈ 2 Jahre)
+ *   - Live-Kurs     : GET /0/public/Ticker?pair=XBTUSD
  *
  * Robustheit: Timeout, Wiederholungen mit Backoff, localStorage-Cache (mit Verfall) und
  * Rückgriff auf veraltete Cache-Daten, wenn das Netz ausfällt.
@@ -13,14 +13,20 @@
   'use strict';
 
   var BASE = 'https://api.kraken.com/0/public/';
-  var PAIR = 'XBTEUR';
+  var PAIRS = { USD: 'XBTUSD', EUR: 'XBTEUR' };
   var TIMEOUT_MS = 12000;
   var RETRIES = 2;                      // zusätzlich zum ersten Versuch
-  var CACHE_PREFIX = 'bsc:v1:';
+  var CACHE_PREFIX = 'bsc:v2:';
   var TTL = {
     10080: 60 * 60 * 1000,              // Wochenkerzen: 1 h frisch
     1440: 15 * 60 * 1000                // Tageskerzen: 15 min frisch
   };
+
+  function pairOf(currency) {
+    var p = PAIRS[currency];
+    if (!p) throw new Error('Unbekannte Währung: ' + currency);
+    return p;
+  }
 
   function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
 
@@ -52,7 +58,11 @@
   function getJson(url) {
     var ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
     var timer = ctrl ? setTimeout(function () { ctrl.abort(); }, TIMEOUT_MS) : null;
-    return fetch(url, { signal: ctrl ? ctrl.signal : undefined, headers: { Accept: 'application/json' } })
+    return fetch(url, {
+      signal: ctrl ? ctrl.signal : undefined,
+      headers: { Accept: 'application/json' },
+      referrerPolicy: 'no-referrer'     // keine Herkunftsadresse an Kraken übermitteln
+    })
       .then(function (res) {
         if (!res.ok) {
           var err = new Error('HTTP ' + res.status);
@@ -102,25 +112,27 @@
   }
 
   /**
-   * Lädt Kerzen für ein Intervall (Minuten: 10080 = Woche, 1440 = Tag).
+   * Lädt Kerzen für Währung ('USD' | 'EUR') und Intervall (Minuten: 10080 = Woche, 1440 = Tag).
    * Strategie „stale-while-revalidate“:
    *   - frischer Cache  -> sofort zurück, kein Netzwerk
-   *   - veralteter Cache -> sofort zurück (onStale), parallel im Hintergrund erneuern
+   *   - veralteter Cache -> sofort zurück (source 'stale'), parallel im Hintergrund erneuern
    *   - kein Cache       -> Netzwerk, bei Fehler Ausnahme
    *
+   * @param {'USD'|'EUR'} currency
    * @param {number} interval
-   * @param {{onUpdate?:function(Array)}} [opts]  wird aufgerufen, wenn nach einem veralteten Cache frische Daten eintreffen
+   * @param {{onUpdate?:function(Object)}} [opts]  wird aufgerufen, wenn nach einem veralteten Cache frische Daten eintreffen
    * @returns {Promise<{candles:Array, source:'cache'|'network'|'stale', savedAt:number}>}
    */
-  function fetchCandles(interval, opts) {
+  function fetchCandles(currency, interval, opts) {
     opts = opts || {};
-    var key = String(interval);
+    var pair = pairOf(currency);
+    var key = pair + ':' + interval;
     var cached = readCache(key);
     var ttl = TTL[interval] || 15 * 60 * 1000;
 
     function network() {
       return withRetry(function () {
-        return getJson(BASE + 'OHLC?pair=' + PAIR + '&interval=' + interval);
+        return getJson(BASE + 'OHLC?pair=' + pair + '&interval=' + interval);
       }).then(function (result) {
         var candles = parseCandles(result);
         if (candles.length < 10) throw new Error('Zu wenige Kerzen erhalten');
@@ -141,10 +153,11 @@
     return network();
   }
 
-  /** Aktueller Kurs (letzter Handelspreis) in EUR. Wirft bei Fehlern. */
-  function fetchLivePrice() {
+  /** Aktueller Kurs (letzter Handelspreis) in der gewählten Währung. Wirft bei Fehlern. */
+  function fetchLivePrice(currency) {
+    var pair = pairOf(currency);
     return withRetry(function () {
-      return getJson(BASE + 'Ticker?pair=' + PAIR);
+      return getJson(BASE + 'Ticker?pair=' + pair);
     }).then(function (result) {
       var key = Object.keys(result)[0];
       var price = key && result[key] && result[key].c ? parseFloat(result[key].c[0]) : NaN;

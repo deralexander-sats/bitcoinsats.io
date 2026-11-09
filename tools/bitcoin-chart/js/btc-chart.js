@@ -68,12 +68,12 @@
     return linearTicks(min, max, 5);
   }
 
-  function formatAxisPrice(v, narrow) {
+  function formatAxisPrice(v, narrow, sym) {
     if (narrow && v >= 10000) {
       var k = v / 1000;
-      return (Number.isInteger(k) ? nf0.format(k) : k.toFixed(1).replace('.', ',')) + 'k €';
+      return (Number.isInteger(k) ? nf0.format(k) : k.toFixed(1).replace('.', ',')) + 'k ' + sym;
     }
-    return nf0.format(Math.round(v)) + ' €';
+    return nf0.format(Math.round(v)) + ' ' + sym;
   }
 
   /** Zeitachsen-Marken auf Kalendergrenzen (UTC). */
@@ -141,7 +141,7 @@
     var octx = over.getContext('2d');
 
     var state = {
-      price: [], wma: [], log: false,
+      price: [], wma: [], log: false, sym: '$',
       t0: 0, t1: 1, yMin: 0, yMax: 1,
       w: 0, h: 0, dpr: 1,
       pad: { l: 10, r: 60, t: 12, b: 28 },
@@ -173,7 +173,8 @@
       c.grid = cssVar(host, '--btcc-grid', 'rgba(20,24,31,0.07)');
       c.text = cssVar(host, '--btcc-muted', 'rgba(20,24,31,0.58)');
       c.ink = cssVar(host, '--btcc-text', '#14181F');
-      c.tagText = cssVar(host, '--btcc-tag-text', '#FFFFFF');
+      c.priceTagText = cssVar(host, '--btcc-price-tag-text', '#0B0F19');
+      c.wmaTagText = cssVar(host, '--btcc-wma-tag-text', '#F3F4F6');
       state.font = getComputedStyle(host).fontFamily || 'system-ui, sans-serif';
     }
 
@@ -240,13 +241,13 @@
       var wv = visible(state.wma, state.t0);
       var lastP = pv[pv.length - 1];
       var lastW = wv.length ? wv[wv.length - 1] : null;
-      var priceTagText = nf0.format(Math.round(lastP.c)) + ' €';
-      var wmaTagText = lastW ? nf0.format(Math.round(lastW.v)) + ' €' : '';
+      var priceTagText = nf0.format(Math.round(lastP.c)) + ' ' + state.sym;
+      var wmaTagText = lastW ? nf0.format(Math.round(lastW.v)) + ' ' + state.sym : '';
 
       // rechte Randbreite: breitestes Achsenlabel bzw. breiteste Wertmarke
       ctx.font = '12px ' + state.font;
       var wmax = 0;
-      yTicks.forEach(function (v) { wmax = Math.max(wmax, ctx.measureText(formatAxisPrice(v, narrow)).width); });
+      yTicks.forEach(function (v) { wmax = Math.max(wmax, ctx.measureText(formatAxisPrice(v, narrow, state.sym)).width); });
       ctx.font = '600 11.5px ' + state.font;
       var tagW = Math.max(ctx.measureText(priceTagText).width, ctx.measureText(wmaTagText).width) + 16;
       p.r = Math.max(Math.ceil(wmax) + 14, Math.ceil(tagW) + 10);
@@ -264,7 +265,7 @@
         ctx.beginPath(); ctx.moveTo(p.l, y); ctx.lineTo(p.l + plotW, y); ctx.stroke();
         if (y < p.t + 6 || y > p.t + plotH - 6) return; // Label nicht in den Rand quetschen
         ctx.fillStyle = c.text;
-        ctx.fillText(formatAxisPrice(v, narrow), p.l + plotW + 10, y);
+        ctx.fillText(formatAxisPrice(v, narrow, state.sym), p.l + plotW + 10, y);
       });
 
       // X-Beschriftung
@@ -313,8 +314,8 @@
       ctx.restore();
 
       // Endpunkte + Wertmarken am rechten Rand
-      var tags = [{ y: yOf(lastP.c), text: priceTagText, color: c.price }];
-      if (lastW) tags.push({ y: yOf(lastW.v), text: wmaTagText, color: c.wma });
+      var tags = [{ y: yOf(lastP.c), text: priceTagText, color: c.price, text_color: c.priceTagText }];
+      if (lastW) tags.push({ y: yOf(lastW.v), text: wmaTagText, color: c.wma, text_color: c.wmaTagText });
       [[lastP.t, lastP.c, c.price], lastW ? [lastW.t, lastW.v, c.wma] : null].forEach(function (d) {
         if (!d) return;
         var x = xOf(d[0]), y = yOf(d[1]);
@@ -329,7 +330,7 @@
         var tw = p.r - 8, th = 20, x = state.w - tw - 2, y = Math.max(p.t + th / 2, Math.min(p.t + plotH - th / 2, tg.y));
         roundRect(ctx, x, y - th / 2, tw, th, 6);
         ctx.fillStyle = tg.color; ctx.fill();
-        ctx.fillStyle = c.tagText;
+        ctx.fillStyle = tg.text_color;
         ctx.fillText(tg.text, x + tw / 2, y + 0.5);
       });
     }
@@ -430,6 +431,7 @@
       setData: function (price, wma, o) {
         state.price = price; state.wma = wma;
         state.log = !!(o && o.log);
+        state.sym = (o && o.sym) || '$';
         state.hover = -1;
         render();
       },
